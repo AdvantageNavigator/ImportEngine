@@ -15,6 +15,13 @@ public class ArgumentValidationUtils {
 		
 	}
 	
+	public static void validateStringLength(String argument, int minLength, int maxLength) {
+		if(argument.length()<minLength||argument.length()>maxLength) {
+			String argumentName = argument.getClass().getName();
+			throw new IllegalArgumentException(argumentName +  " length must be " + minLength + "-" + maxLength + " characters");
+		}
+	}
+	
 	public static void validateNotNull(Object argument) {
 		if(argument == null) throw new IllegalArgumentException("One or more arguments is null");
 	}

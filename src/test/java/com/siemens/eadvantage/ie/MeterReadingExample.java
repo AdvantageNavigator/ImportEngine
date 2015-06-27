@@ -11,7 +11,7 @@ public class MeterReadingExample {
 
 	public static void main(String[] args) throws ParseException, IOException {
 		
-		ImportEngineClient client = new ImportEngineClient("Testdevice1.0", "Testdevice1.0");
+		ImportEngineClient client = new ImportEngineClient("user", "secret");
 		
 		MeterReading reading1 = new MeterReading("meter_001", new DateTime("01/01/2015 12:00:00"), 10.0);
 		MeterReading reading2 = new MeterReading("meter_001", new DateTime("01/01/2015 13:00:00"), 11.0);

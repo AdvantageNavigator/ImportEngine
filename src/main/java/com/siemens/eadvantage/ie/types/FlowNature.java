@@ -1,5 +1,11 @@
 package com.siemens.eadvantage.ie.types;
 
+/**
+ * Type of meter (Meter Type in the Advantage Navigator web front-end).
+ * 
+ * @author Mike Pichler
+ *
+ */
 public enum FlowNature {
 
 	OTHER_METER(0),
@@ -11,5 +17,10 @@ public enum FlowNature {
     
     private FlowNature(int id) { this.id = id; }
     
+    /**
+     * Gets the numeric value of the enumeration choice according to the IE documentation.
+     * 
+     * @return the numeric value of the enumeration choice
+     */
     public int getValue() { return id; }
 }

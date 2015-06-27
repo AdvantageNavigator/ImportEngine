@@ -10,7 +10,7 @@ public class DeviceStatusExample {
 
 	public static void main(String[] args) throws IOException {
 		
-		ImportEngineClient client = new ImportEngineClient("Testdevice1.0", "Testdevice1.0");
+		ImportEngineClient client = new ImportEngineClient("user", "secret");
 		
 		DeviceStatus status = new DeviceStatus(DeviceStatusClass.OK, "Device up and running", "1.1");
 		DeviceStatusCommand command = new DeviceStatusCommand(status);

@@ -9,7 +9,7 @@ public class DeviceConfigurationExample {
 
 	public static void main(String[] args) throws IOException {
 		
-		ImportEngineClient client = new ImportEngineClient("Testdevice1.0", "Testdevice1.0");
+		ImportEngineClient client = new ImportEngineClient("user", "secret");
 		
 		String content = String.format("property1 = value1%nproperty2 = value2%nproperty3 = value3");
 		DeviceConfiguration config = new DeviceConfiguration("anotherfile.properties", content);
