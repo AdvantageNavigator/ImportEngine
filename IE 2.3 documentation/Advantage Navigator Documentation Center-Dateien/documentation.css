@@ -1,0 +1,166 @@
+html {
+	height: 100%;
+	width: 100%
+}
+
+img {
+	border: none;
+	margin: 0;
+}
+
+body {
+	color: #000;
+	background: #fff;
+	padding: 0;
+	margin: 0;
+	font: 12px helvetica, verdana, sans-serif;
+	height: 100%;
+	width: 100%;
+	margin: 0
+}
+
+#header {
+	background: #fff;
+	border-bottom: 3px solid #369;
+	padding-top: 0px;
+	margin: 0 0 0 0;
+}
+
+#header h1 {
+	color: white;
+	background: #69c;
+	padding-left: 16px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	margin: 0;
+	border-top: 1px solid #369;
+	font: bold 18px verdana, sans-serif;
+}
+
+#navigation {
+	float: left;
+	width: 150px;
+}
+
+#navigation ul {
+	margin: 10px 0 0 0;
+	padding: 0;
+	list-style: none;
+	width: 150px;
+}
+
+#navigation li {
+	padding: 0 0 2px 0;
+	/*der abstand zw den menupunkten kann wegen dem ie nicht mit margin gesetzt werden*/
+	margin: 0;
+}
+
+#navigation a {
+	width: 150px;
+	/*die breitenangabe wir nur vom ie benoetigt*/
+	display: block;
+	color: white;
+	background: #369;
+	border: 1px solid #b3cde6;
+	padding: 4px 4px 4px 10px;
+	font-weight: bold;
+	font-size: 12px;
+	text-decoration: none;
+}
+
+#navigation a:hover {
+	color: white;
+	background: #6699CC;
+	border: 1px solid #b3cde6;
+}
+
+#content {
+	margin: 0 80px 20px 80px;
+}
+
+#content h2 {
+	margin: 32px 0 10px 0;
+	padding: 2px 0 2px 5px;
+	font: bold 16px verdana, sans-serif;
+	color: #369;
+	border-left: 10px solid #369;
+	border-bottom: 1px solid #369;
+}
+
+#content h3 {
+	margin: 25px 0 10px 0;
+	padding: 2px 0 2px 5px;
+	font: bold 14px verdana, sans-serif;
+	color: #000;
+}
+
+div.doc {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000000;
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+	border: none;
+}
+
+a {
+	color: #369
+}
+
+div.doc h3 {
+	font-size: 16px;
+	font-weight: bold;
+	margin: 16px 0px 16px 0px; /* top right bottom left */
+}
+
+div.doc p.code {
+	font-family: "Courier New", Courier, mono;
+	font-size: 12px;
+	font-weight: normal;
+	border: 1px solid #000000;
+	padding: 3px 6px 3px 6px; /* top right bottom left */
+	margin: 16px 0px 16px 0px; /* top right bottom left */
+}
+
+div.doc p {
+	margin: 16px 0px 16px 0px; /* top right bottom left */
+}
+
+div.doc li {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	margin: 0px 0px 6px 0px; /* top right bottom left */
+}
+
+div.doc table {
+	border: 1px solid #000000;
+	vertical-align: top;
+	border-collapse: collapse;
+	margin: 16px 0px 16px 0px;
+}
+
+div.doc table tr th {
+	border: 1px solid #000000;
+	vertical-align: top;
+	text-align: left;
+}
+
+div.doc table tr th p {
+	font-weight: normal;
+	font-style: italic;
+	margin: 0px 0px 0px 0px;
+	padding: 3px 3px 3px 3px;
+}
+
+div.doc table tr td {
+	border: 1px solid #000000;
+	vertical-align: top;
+	text-align: left;
+}
+
+div.doc table tr td p {
+	margin: 0px 0px 0px 0px;
+	padding: 3px 3px 3px 3px;
+}

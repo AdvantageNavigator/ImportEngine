@@ -1,0 +1,1386 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head>
+    <title>Advantage Navigator Documentation Center</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Style-Type" content="text/css">
+    <link rel="shortcut icon" type="image/x-icon" href="https://eadvantage.siemens.com/ieg/docs/assets/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="Advantage%20Navigator%20Documentation%20Center-Dateien/documentation.css">
+</head>
+<body style="background-color:#cccccc;">
+<a name="top"></a>
+<table style="height:100%;width:100%" border="0" cellpadding="0" cellspacing="0">
+<tbody><tr>
+    <td colspan="2" style="vertical-align:top;">
+        <div id="header" style="background-color:#ffffff"><img src="Advantage%20Navigator%20Documentation%20Center-Dateien/logo.png" border="0">
+
+            <h1>Import Engine 2.3 Documentation</h1>
+        </div>
+    </td>
+</tr>
+<tr>
+<td style="background-color:#666666;width:160px;vertical-align:top;height:90%">
+    <div style="text-align:center;font-weight:bold;color:#ffffff;padding:4px;">Advantage Navigator<br>
+        Documentation Center
+    </div>
+
+    <div id="navigation">
+        <ul>
+            <li><a href="https://eadvantage.siemens.com/ieg/docs/documentation.jsp#top" style="background-color:#6699cc">IEG Documentation</a></li>
+            <div style="display:block;"><a href="https://eadvantage.siemens.com/ieg/docs/documentation.jsp#introduction" style="background-color:#6699cc">Introduction</a>
+            </div>
+            <div style="display:block;"><a href="https://eadvantage.siemens.com/ieg/docs/ieg2.jsp" style="margin-top:6px;">IEG 2 Format</a></div>
+            <div style="display:block;"><a href="#basics" style="background-color:#6699cc">Import Interface Basics</a>
+            </div>
+            <div style="display:block;"><a href="#fileformat" style="background-color:#6699cc">Import File Format</a>
+            </div>
+            <div style="display:block;"><a href="#devicestatus" style="background-color:#6699cc">command
+                DEVICE_STATUS</a></div>
+            <div style="display:block;"><a href="#deviceconfiguration" style="background-color:#6699cc">command
+                DEVICE_CONFIGURATION</a></div>
+            <div style="display:block;"><a href="#alarmstatus" style="background-color:#6699cc">command ALARM_STATUS</a>
+            </div>
+            <div style="display:block;"><a href="#metercreate" style="background-color:#6699cc">command METER_CREATE</a>
+            </div>
+            <div style="display:block;"><a href="#meterreading" style="background-color:#6699cc">command
+                METER_READING</a></div>
+            <div style="display:block;"><a href="#meterexchange" style="background-color:#6699cc">command
+                METER_EXCHANGE</a></div>
+            <div style="display:block;"><a href="#meterdeactivate" style="background-color:#6699cc">command
+                METER_DEACTIVATE</a></div>
+            <div style="display:block;"><a href="#meterdelete" style="background-color:#6699cc">command METER_DELETE</a>
+            </div>
+        </ul>
+    </div>
+</td>
+<td style="vertical-align:top">
+<div id="content"><a name="basics"></a>
+
+    <h2>Import Interface Basics</h2>
+
+    <div class="doc">
+        <p>The Advantage Navigator Import Engine uses an HTML form which must be posted to one of the following
+            URLs:</p>
+        <ul>
+            <li><strong>Quality Assurance System:</strong><br>
+                https://eadvantageq.siemens.com/ieg/2_0/import.html<br>
+            </li><li><strong>Production System:</strong><br>
+                https://eadvantage.siemens.com/ieg/2_0/import.html
+            </li>
+        </ul>
+        <p>The form data must be "multipart/form-data" encoded. </p>
+
+        <p>The HTML form must contain the following form fields:</p>
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tbody><tr>
+                <th><p>Field name</p></th>
+                <th><p>Description</p></th>
+            </tr>
+            <tr>
+                <td><p>iegUsername</p></td>
+                <td><p>The UTF-8 encoded username of the Advantage Navigator Device User.<br> An Advantage Navigator
+                    Device User can be created by logging into the Advantage Navigator web front-end and browsing to
+                    "User Administration : My Devices : New Device User".</p></td>
+            </tr>
+            <tr>
+                <td><p>iegPassword</p></td>
+                <td><p>The case-sensitive UTF-8 encoded password of the Advantage Navigator Device User.</p></td>
+            </tr>
+            <tr>
+                <td><p>iegImportFile</p></td>
+                <td><p>The UTF-8 encoded plain text import file. The file data may optionally be zipped.</p></td>
+            </tr>
+        </tbody></table>
+        <p>The sample HTML fragment below (click <a href="https://eadvantage.siemens.com/ieg/docs/fileUploadIeg2.html" target="_blank">here</a> for
+            a live view) demonstrates the form and the input elements required by the Advantage Navigator
+            Import Engine:</p>
+
+        <p class="code">&lt;form action="/ieg/2_0/import.html" method="post" id="fileForm"
+            name="fileForm" &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; enctype="multipart/form-data"&gt;<br>&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &lt;b&gt;Username: &lt;/b&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
+            &lt;input type="text" id="iegUsername" name="iegUsername" value="swpDevice"&gt;&lt;br
+            /&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &lt;b&gt;Password: &lt;/b&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp; &lt;input type="password" id="iegPassword" name="iegPassword"
+            value=""&gt;&lt;br /&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &lt;b&gt;Import file:
+            &lt;/b&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &lt;input type="file" id="sourceFile"
+            name="swpImportFile"&gt;&lt;br /&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &lt;input
+            type="submit" value="Upload..."&gt;<br>&lt;/form&gt;
+        </p>
+
+
+        <p>For example, if you were to create a new meter, your <em>iegImportFile</em> could
+            look like this:</p>
+
+        <p class="code">command=METER_CREATE delimiter=;
+            optionalColumnList=startValue,maxMeterValue,comment,manualRead<br>
+            mk123;mk123;01/01/1980 13:00:00;2;118;86;55;10000;TestReading;1</p>
+
+        <p>If you now were to submit this <em>iegImportFile</em> using the <em>iegUsername</em> "iegDevice" and
+            the <em>iegPassword</em> "iegDevice", the following would be the dump of the
+            MIME Multipart Media Encapsulation portion of the resulting HTTP request:</p>
+
+        <p class="code">-----------------------------7d72691230b00<br>
+            Content-Disposition: form-data; name="iegUsername"<br>
+            <br>
+            iegDevice<br>
+            -----------------------------7d72691230b00<br>
+            Content-Disposition: form-data; name="iegPassword"<br>
+            <br>
+            iegDevice<br>
+            -----------------------------7d72691230b00<br>
+            Content-Disposition: form-data; name="iegImportFile"; filename="C:\Temp\myImportFile.txt"<br>
+            Content-Type: text/plain<br>
+            <br>
+            command=METER_CREATE delimiter=; optionalColumnList=startValue,maxMeterValue,comment,manualRead<br>
+            mk123;mk123;01/01/1980 13:00:00;2;118;86;55;10000;TestReading;1<br>
+            <br>
+            -----------------------------7d72691230b00--</p>
+
+        <p>Upon completion of the <em>iegImportFile</em> processing, the Advantage Navigator Import Engine
+            responds with a plain text status message.</p>
+
+        <p>A status message consists of a list of double vertical-bar '||' seperated message elements.
+            The square brackets '[]' used in the notation below denote optional message elements
+            while curly brackets denote message elements which are always present. The brackets themselves are not part
+            of actual message syntax.</p>
+
+        <p class="code">{Status code}||{Description}||[{Log ID in database}]||[{Comma delimeted row numbers (if
+            available)}]</p>
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tbody><tr>
+                <th width="81"><p>Status Code</p></th>
+                <th width="515"><p>Description</p></th>
+            </tr>
+            <tr>
+                <td><p>SUC01026</p></td>
+                <td><p>Import complete with no errors.</p></td>
+            </tr>
+            <!-- <tr>
+              <td><p>IEG10000</p></td>
+              <td><p>Import completly failed.</p></td>
+            </tr> -->
+            <tr>
+                <td><p>IEG20000</p></td>
+                <td><p>Nothing imported; no import objects could be created from the source file.</p></td>
+            </tr>
+            <tr>
+                <td><p>IEG11000</p></td>
+                <td><p>Import complete with errors</p></td>
+            </tr>
+            <tr>
+                <td><p>USR01024</p></td>
+                <td><p>Invalid user credentials</p></td>
+            </tr>
+            <tr>
+                <td><p>SYS10000</p></td>
+                <td><p>The system encountered an internal error. The actual description returned varies on the error
+                    encountered. </p></td>
+            </tr>
+        </tbody></table>
+        <p>
+        </p><ul>
+            <li><em>SUC01026</em> is returned upon successful <em>iegImportFile</em> processing.
+                <!-- <li><em>IEG10000</em> is returned when the data contained in the <em>iegImportFile</em> is either ill-formatted or the <em>iegImportFile</em> contains the METER_CREATE command with data for a meter that is already present within the Advantage Navigator System. Meter reading data that already exists within the Advantage Navigator System will either be overwritten or ignored, dependent on the rights specific to the Advantage Navigator Device User.</li> -->
+            </li><li><em>IEG11000</em> is returned upon the partial import of the <em>iegImportFile</em>. This indicates that
+                the <em>iegImportFile</em> contains some unparsable data lines. Detailed information can be downloaded
+                from the Advantage Navigator System (see paragraph below).
+            </li>
+            <li><em>USR01024</em> is returned upon failure to authenticate the Advantage Navigator Device User, i.e.
+                password and/or login name of the Advantage Navigator Device User are wrong.
+            </li>
+            <li><em>SYS10000</em> is returned when the Advantage Navigator Import Engine encounters internal errors,
+                i.e. a connection to the database could not be established or the <em>iegImportFile</em> could not be
+                written to the file system, etc.
+            </li>
+        </ul>
+        Optional columns returned by the Advantage Navigator Import Engine are:
+        <ul>
+            <li>ID of the log file stored by the Advantage Navigator System.</li>
+            <li>Comma "," seperated list of row numbers containing unparsable data.</li>
+        </ul>
+        <p>Each import process performed by a given Advantage Navigator Device User is logged to the Advantage Navigator
+            System for controlling purposes. The unique identifier of the stored log information is returned to the
+            client, if applicable. This reduces the amount of data returned to the client once the import process has
+            completed. The detailed log information can be found in the Advantage Navigator web front-end by logging
+            into the Advantage Navigator web front-end as the Device User owner and browsing to "User Administration :
+            My Devices : Device Log Symbol".
+            <br>
+            Note: <em>SYS10000</em> errors cannot always be logged to the Advantage Navigator System, i.e. when database
+            connectivity fails or when an invalid <em>iegImportFile</em> has been uploaded.
+        </p>
+
+        <p>Here is an example of the detailed log for Advantage Navigator Device User <em>iegDevice</em>: </p>
+
+        <p class="code">Device Status Log for client: iegDevice<br>
+            [2007-10-24 02:08:51.533] Status: WARNING - Error creating ImportObject: Unparseable date: "118"
+            in row number 4<br>
+            MeterDTO: 58431 imported successfully.<br>
+            MeterDTO: 58432 imported successfully.<br>
+            Error creating ImportObject: 3 in row number 1000<br>
+            Error creating ImportObject: Unparseable date: "03/01/1981 030:00" in row number 5569<br>
+            Error creating ImportObject: Unparseable date: "04/16/1981 14:4500" in row number 10006<br>
+            MeterReading inserted batch with: 9997 items.</p>
+    </div>
+    <a href="#top"><img src="Advantage%20Navigator%20Documentation%20Center-Dateien/top.gif" alt="Top of page" title="Top of page" style="float:right;" border="0"></a>
+</div>
+<div id="content"><a name="fileformat"></a>
+
+    <h2>Import File Format</h2>
+
+    <div class="doc">
+        <p>The Advantage Navigator Import Engine takes all commands and data to be processed from an UTF-8
+            encoded <em>Import File</em>.</p>
+        <ul>
+            <li>The <em>Import File</em> is a plain text file that may either consist of
+                &lt;CR&gt;&lt;LF&gt; (Carriage-Return Line-Feed, Windows) or &lt;LF&gt; (Line-Feed,
+                Unix) terminated lines. The last line in the <em>Import File</em> does not need to be
+                terminated.
+            </li>
+            <li>The <em>Import File</em> is read and processed line by line.</li>
+            <li>Empty lines or lines that entirely consist of white spaces (blanks, tabulators)
+                are always ingnored, no matter at which position they occur in the <em>Import
+                    File</em>.
+            </li>
+            <li>Comments are not supported.</li>
+            <li>"&lt;" "&gt;" are not allowed for values.<br></li>
+            <li>The first non-empty line in the <em>Import File</em> must specify the command
+                to be executed by the Advantage Navigator Import Engine (<em>Command Line</em>). The first directive
+                on this line must be the "command=" directive that may be followed
+                by further optional directives. Multiple directives on the <em>Command Line</em> must
+                be delimited by white spaces (blanks, tabulators).
+            </li>
+            <li>All subsequent lines (<em>Data Line</em>s) must contain the data for the
+                respective previously given command, unless another <em>Command Line</em> is
+                detected. For interactive applications it is not advisable to specify more than
+                one <em>Command Line</em> per <em>Import File</em>.
+            </li>
+            <li>The default delimiter for data columns in <em>Data Lines</em> is the comma
+                ',' character. The delimiter string can be configured by the "delimiter=" directive
+                on the <em>Command Line</em>. It is the programmer's responsibility to ensure
+                that the specified delimiter string does not occur in the data itself. The
+                asterisk '*' and the period '.' characters must not be used in delimiter strings.
+            </li>
+            <li>All <em>Data Lines</em> must consist of command-specific mandatory data columns.
+                The order of these mandatory data columns is static and cannot be changed. The
+                mandatory data columns may be followed by command-specific optional data columns
+                which have to be declared on the <em>Command Line</em> using the "optionalColumnList="
+                directive.
+                Each optional data column must be declared by specifying its predefined data
+                column name in a comma ',' delimited list. The order of optional data columns
+                in <em>Data Lines</em> must match the order in which they are declared.
+            </li>
+        </ul>
+        <p>The general <em>Command Line</em> syntax is defined below where mandatory elements
+            are denoted in curly brackets '{}' and optional elements in square brackets '[]'. The
+            brackets themselves are not part of the actual <em>Command Line</em> syntax.</p>
+
+        <p class="code">command={command name} [delimiter={character}] [optionalColumnList={column
+            name[,column name]}]</p>
+
+        <p>Here are some examples for <em>Import Files</em>:</p>
+
+        <p class="code">command=METER_CREATE delimiter=;
+            optionalColumnList=startValue,maxMeterValue,comment,manualRead<br>
+            cq_03_07_13_40_24;cq_03_07_13_40_24;01/01/1980 13:00:00;2;118;86;55;10000;Test Meter;1</p>
+
+        <p class="code">command=METER_READING delimiter=; optionalColumnList=qualityAttribute,description<br>
+            cq_03_07_13_40_24;01/02/1981 11:00:00;1;33;Test Reading_0<br>
+            cq_03_07_13_40_24;01/02/1981 11:15:00;2;33;Test Reading_1<br>
+            cq_03_07_13_40_24;01/02/1981 11:30:00;3;33;Test Reading_2<br>
+            cq_03_07_13_40_24;01/02/1981 11:45:00;4;33;Test Reading_3<br>
+            cq_03_07_13_40_24;01/02/1981 12:00:00;5;33;Test Reading_4<br>
+            cq_03_07_13_40_24;01/02/1981 12:15:00;6;33;Test Reading_5<br>
+            cq_03_07_13_40_24;01/02/1981 12:30:00;7;33;Test Reading_6<br>
+            cq_03_07_13_40_24;01/02/1981 12:45:00;8;33;Test Reading_7<br>
+            cq_03_07_13_40_24;01/02/1981 13:00:00;9;33;Test Reading_8<br>
+            cq_03_07_13_40_24;01/02/1981 13:15:00;10;33;Test Reading_9
+        </p>
+
+        <p>The following table gives an overview of all supported commands:</p>
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tbody><tr>
+                <th><p>Command</p></th>
+                <th><p>Description</p></th>
+            </tr>
+            <tr>
+                <td><p><a href="#metercreate">METER_CREATE</a></p></td>
+                <td><p>Creates a meter.</p></td>
+            </tr>
+            <tr>
+                <td><p><a href="#meterexchange">METER_EXCHANGE</a></p></td>
+                <td><p>Performs a meter exchange.</p></td>
+            </tr>
+            <tr>
+                <td><p><a href="#meterreading">METER_READING</a></p></td>
+                <td><p>Submits readings for a meter.</p></td>
+            </tr>
+            <tr>
+                <td><p><a href="#meterdeactivate">METER_DEACTIVATE</a></p></td>
+                <td><p>Deactivates a meter.</p></td>
+            </tr>
+            <tr>
+                <td><p><a href="#devicestatus">DEVICE_STATUS</a></p></td>
+                <td><p>Submits the status of a device.</p></td>
+            </tr>
+            <tr>
+                <td><p><a href="#deviceconfiguration">DEVICE_CONFIGURATION</a></p></td>
+                <td><p>Submits the configuration file of a device.</p></td>
+            </tr>
+            <tr>
+                <td><p><a href="#alarmstatus">ALARM_STATUS</a></p></td>
+                <td><p>Submits a alarming message of a device.</p></td>
+            </tr>
+        </tbody></table>
+    </div>
+    <a href="#top"><img src="Advantage%20Navigator%20Documentation%20Center-Dateien/top.gif" alt="Top of page" title="Top of page" style="float:right;" border="0"></a>
+</div>
+<div id="content"><a name="devicestatus"></a>
+    <a name="devicestatus"></a>
+
+    <h2>command=DEVICE_STATUS</h2>
+
+    <div class="doc">
+        <p>Allows a device to transmit its current status to the Advantage Navigator system. </p>
+
+        <h3>Data Columns</h3>
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tbody><tr>
+                <th><p>Column</p></th>
+                <th><p>Column Name</p></th>
+                <th><p>Req./Opt.</p></th>
+                <th><p>Data Type</p></th>
+                <th><p>Data Range</p></th>
+                <th><p>Description</p></th>
+            </tr>
+            <tr>
+                <td><p>1</p></td>
+                <td><p>statusClass</p></td>
+                <td><p>required</p></td>
+                <td><p>String</p></td>
+                <td><p>'OK',
+                    'WARNING' or 'ERROR'</p></td>
+                <td><p>Specifies the status class that the status text belongs to. </p></td>
+            </tr>
+            <tr>
+                <td><p>2</p></td>
+                <td><p>statusText</p></td>
+                <td><p>required</p></td>
+                <td><p>String</p></td>
+                <td><p>1-50 characters</p></td>
+                <td><p>Specifies an arbitrary status text. </p></td>
+            </tr>
+            <tr>
+                <td><p>3</p></td>
+                <td><p>version</p></td>
+                <td><p>required</p></td>
+                <td><p>String</p></td>
+                <td><p>1-1024 characters</p></td>
+                <td><p>Specifies the version information of the device. </p></td>
+            </tr>
+        </tbody></table>
+        <p>Example:</p>
+
+        <p class="code">command=DEVICE_STATUS<br>
+            OK,Nuclear power source is radiating,1.4.4 </p>
+    </div>
+    <a href="#top"><img src="Advantage%20Navigator%20Documentation%20Center-Dateien/top.gif" alt="Top of page" title="Top of page" style="float:right;" border="0"></a>
+</div>
+<div id="content"><a name="devicestatus"></a>
+    <a name="deviceconfiguration"></a>
+
+    <h2>command=DEVICE_CONFIGURATION</h2>
+
+    <div class="doc">
+        <p>Allows to transmit configuration files to the Advantage Navigator System.
+            <br>
+            Configuration Files with the same file name for one device will be overwritten.
+        </p>
+
+        <h3>Data Columns</h3>
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tbody><tr>
+                <th><p>Column</p></th>
+                <th><p>Column Name</p></th>
+                <th><p>Req./Opt.</p></th>
+                <th><p>Data Type</p></th>
+                <th><p>Data Range</p></th>
+                <th><p>Description</p></th>
+            </tr>
+            <tr>
+                <td><p>1</p></td>
+                <td><p>fileName</p></td>
+                <td><p>required</p></td>
+                <td><p>String</p></td>
+                <td><p>1-255 characters</p></td>
+                <td><p>Specifies the filename for the configuration file. <br>This file name will be shown in the
+                    Advantage Navigator Application</p></td>
+            </tr>
+            <tr>
+                <td><p>2</p></td>
+                <td><p>File</p></td>
+                <td><p>required</p></td>
+                <td><p>String</p></td>
+                <td><p>1-2.147.483.647 characters</p></td>
+                <td><p>The content of the configuration file.<br>The imported file can be downloaded in the Advantage
+                    Navigator Application. </p></td>
+            </tr>
+        </tbody></table>
+        <p>Example:</p>
+
+        <p class="code">command=DEVICE_CONFIGURATION filename=SWP.properties<br>
+            # ----------------------------------------------------------------------<br>
+            # Property file for the SoftwareProxy<br>
+            # The SWP is configured by these attributes<br>
+            # Do not change this file, use the enclosed editor instead<br>
+            # All lines beginning with '#' are ignored<br>
+            # <br>
+            # Created by property editor at: 8/17/05 8:15 AM (UTC)<br>
+            # ----------------------------------------------------------------------<br>
+            attributeColumn=6<br>
+            dir.archiveDir=archive<br>
+            dir.failedDir=failed<br>
+            dir.logDir=log<br>
+            dir.pendingDir=pending<br>
+            dir.sendDir=send<br>
+            dir.sourceDir=in<br>
+            emcDelims=__$__<br>
+            emcUrl=https://eadstage.khe.siemens.com/ieg01/std/import.htm<br>
+            emcUsername=emcUsername<br>
+            emcPassword=emcPassword<br>
+            proxyServer=139.16.64.3<br>
+            proxyPort=3128<br>
+            rowDelimeter=RECORDER<br>
+            sleepTime=5000<br>
+            ...<br>
+            ...
+        </p>
+    </div>
+    <a href="#top"><img src="Advantage%20Navigator%20Documentation%20Center-Dateien/top.gif" alt="Top of page" title="Top of page" style="float:right;" border="0"></a>
+</div>
+
+<a name="alarmstatus"></a>
+
+<div id="content"><a name="alarmstatus">
+
+    <h2>command=ALARM_STATUS</h2>
+
+    <div class="doc">
+        <p>The ALARM_STATUS command submits the status of an alarm point to Advantage Navigator.
+            <br>
+            In Advantage Navigator alarming is realized with two objects:
+        </p><ol>
+            <li>Alarm Point<br>
+                The Alarm Point is a point that can hold an Alarm Point Status (similar to a meter for a reading). Alarm
+                Points cannot be created or imported by
+                Advantage Navigator. They are automatically created the first time a Alarm Point Status is transmitted
+                to the IEG. Alarm stati which already exist (defined by the datasource)
+                in the Advantage Navigator system will be overwritten.
+            </li>
+            <li>Alarm Point Status<br>
+                The Alarm Point Status defines the status of an Alarm Point at a defined time span.
+                Alarm stati which already exist (defined by time stamp and datasource) in the Advantage Navigator system
+                will be overwritten.
+            </li>
+        </ol>
+        <h3>Data Columns</h3>
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tbody><tr>
+                <th><p>Column</p></th>
+                <th><p>Column Name</p></th>
+                <th><p>Req./Opt.</p></th>
+                <th><p>Data Type</p></th>
+                <th><p>Data Range</p></th>
+                <th><p>Description</p></th>
+            </tr>
+            <tr>
+                <td><p>1</p></td>
+                <td><p>datasource</p></td>
+                <td><p>required</p></td>
+                <td><p>String</p></td>
+                <td><p>1-255 characters</p></td>
+                <td><p>Specifies the ID string that uniquely identifies the Alarm Point. </p></td>
+            </tr>
+            <tr>
+                <td><p>2</p></td>
+                <td><p>dateTime</p></td>
+                <td><p>required</p></td>
+                <td><p>UTC Timestamp<br>
+                    'MM/DD/YYYY HH:mm:ss'</p></td>
+                <td><p>not before '01/01/1950 00:00:00'</p></td>
+                <td><p>Specifies the date and time of the Alarm Point Status.</p></td>
+            </tr>
+            <tr>
+                <td><p>3</p></td>
+                <td><p>alarmPointName</p></td>
+                <td><p>required</p></td>
+                <td><p>String</p></td>
+                <td><p>1-255 characters</p></td>
+                <td><p>The display name of the Alarm Point in the Advantage Navigator web front-end. In general,
+                    alarmPointName can be freely chosen.</p></td>
+            </tr>
+            <tr>
+                <td><p>4</p></td>
+                <td><p>status</p></td>
+                <td><p>required</p></td>
+                <td><p>Integer</p></td>
+                <td><p>
+                    0 = Normal<br>
+                    1 = Normal Unacknowledged<br>
+                    2 = Normal Unreseted<br>
+                    3 = Alarm Acknowledged<br>
+                    4 = Alarm Unacknowledged<br>
+                    5 = Unknown<br>
+                </p></td>
+                <td><p>Status of the Alarm.</p></td>
+            </tr>
+            <tr>
+                <td><p>5</p></td>
+                <td><p>priority</p></td>
+                <td><p>required</p></td>
+                <td><p>Integer</p></td>
+                <td><p>
+                    0 = Low<br>
+                    1 = Medium<br>
+                    2 = High<br>
+                    3 = Critical<br>
+                </p></td>
+                <td><p>Defines the priority of an activity.<br></p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>requiresAcknowledgement</p></td>
+                <td><p>optional</p></td>
+                <td><p>Boolean</p></td>
+                <td><p>0 = False<br>1 = True</p></td>
+                <td><p>Defines if the operator has to acknowledge the alarm in the web application. Default value:
+                    False</p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>parentNodeId</p></td>
+                <td><p>optional</p></td>
+                <td><p>Integer</p></td>
+                <td>&nbsp;</td>
+                <td><p>The node ID under which the Alarm Point should be created. If not specified, the Alarm Point will
+                    be created under the Customer node of the device user in the Advantage Navigator web front-end.</p>
+                </td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>description</p></td>
+                <td><p>optional</p></td>
+                <td><p>String</p></td>
+                <td><p>0-1024 characters</p></td>
+                <td><p>An arbitrary description. Default value: None</p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>comment</p></td>
+                <td><p>optional</p></td>
+                <td><p>String</p></td>
+                <td><p>0-1024 characters</p></td>
+                <td><p>An arbitrary comment. Default value: None</p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>toDo</p></td>
+                <td><p>optional</p></td>
+                <td><p>String</p></td>
+                <td><p>0-1024 characters</p></td>
+                <td><p>An comment what are the next steps to do. Default value: None</p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>alarmMessage</p></td>
+                <td><p>optional</p></td>
+                <td><p>String</p></td>
+                <td><p>0-1024 characters</p></td>
+                <td><p>The alarm message. Default value: None</p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>alarmCondition</p></td>
+                <td><p>optional</p></td>
+                <td><p>String</p></td>
+                <td><p>0-1024 characters</p></td>
+                <td><p>The alarm condition. Default value: None</p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>alarmValue</p></td>
+                <td><p>optional</p></td>
+                <td><p>String</p></td>
+                <td><p>0-255 characters</p></td>
+                <td><p>The alarm value. Default value: None</p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>alarmLimit</p></td>
+                <td><p>optional</p></td>
+                <td><p>String</p></td>
+                <td><p>0-1024 characters</p></td>
+                <td><p>The Alarm Point limit. Default value: None</p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>eventText</p></td>
+                <td><p>optional</p></td>
+                <td><p>String</p></td>
+                <td><p>0-1024 characters</p></td>
+                <td><p>It´s an additional information of a state.<br></p></td>
+            </tr>
+
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>alarmCategory</p></td>
+                <td><p>optional</p></td>
+                <td><p>Integer</p></td>
+                <td><p>
+                    
+                    
+                    1 = Test A<br>2 = Test B<br>3 = Test C<br>4 = Exclusion<br>5 = Fault<br>6 = Alarm<br>7 = SevereAlarm<br>8 = ExternalAlarm<br>9 = AutoExtReleaseOff<br>10 = TestAlarm<br>
+                </p></td>
+                <td><p>The Id of the AlarmPoint category.</p></td>
+            </tr>
+        </tbody></table>
+        <p>Example:</p>
+
+        <p class="code">
+
+
+            command=ALARM_STATUS delimiter=; optionalColumnList=requiresAcknowledgement,description<br>
+            EMC01;04/30/2008 11:17:14;Alarm ankommend;4;3;0;Alarm ankommend
+
+    </p></div>
+    </a><a href="#top"><img src="Advantage%20Navigator%20Documentation%20Center-Dateien/top.gif" alt="Top of page" title="Top of page" style="float:right;" border="0"></a>
+</div>
+<div id="content"><a name="metercreate"></a>
+
+<h2>command=METER_CREATE</h2>
+
+<div class="doc">
+<p>The METER_CREATE command allows the programmatic creation of meters including all of its attributes. </p>
+
+<h3>Data Columns</h3>
+<table border="0" cellpadding="0" cellspacing="0">
+<tbody><tr>
+    <th><p>Column</p></th>
+    <th><p>Column Name</p></th>
+    <th><p>Req./Opt.</p></th>
+    <th><p>Data Type</p></th>
+    <th><p>Data Range</p></th>
+    <th><p>Description</p></th>
+</tr>
+<tr>
+    <td><p>1</p></td>
+    <td><p>datasource</p></td>
+    <td><p>required</p></td>
+    <td><p>String</p></td>
+    <td><p>1-255 characters</p></td>
+    <td><p>An ID string that uniquely identifies a <em>datasource</em>. <em>datasource</em> can either be the hardware
+        ID of an external device or an ID that identifies an external system. In general, <em>datasource</em> can be
+        freely chosen as long as <em>datasource</em> is unique per Advantage Navigator Device User. </p></td>
+</tr>
+<tr>
+    <td><p>2</p></td>
+    <td><p>meterName</p></td>
+    <td><p>required</p></td>
+    <td><p>String</p></td>
+    <td><p>1-255 characters</p></td>
+    <td><p>The display name of the meter in the Advantage Navigator web front-end. In general, <em>meterName</em> can be
+        freely chosen (Meter Name in the Advantage Navigator web front-end). </p></td>
+</tr>
+<tr>
+    <td><p>3</p></td>
+    <td><p>startDateTime</p></td>
+    <td><p>required</p></td>
+    <td><p>UTC Timestamp<br>
+        'MM/DD/YYYY HH:mm:ss'</p></td>
+    <td><p>not before '01/01/1950 00:00:00'</p></td>
+    <td><p>The date and time of the earliest acceptable meter reading (Valid From in the Advantage Navigator web
+        front-end). It must be given in Universal Coordinated Time (UTC).</p></td>
+</tr>
+<tr>
+    <td><p>4</p></td>
+    <td><p>valueType</p></td>
+    <td><p>required</p></td>
+    <td><p>Integer</p></td>
+    <td><p>
+        
+        
+        1 = OutsideTemp<br>2 = Heating<br>3 = HotWater<br>4 = DisplayTotalWater<br>5 = DisplayTotalElectricity<br>6 = DisplayTotalCooling<br>7 = WMZBWWPersRest<br>8 = DisplayTotalHeat<br>10 = Power<br>11 = globaldistribute<br>12 = Cooling<br>13 = Electricity<br>14 = Electricity2<br>15 = Electricity1<br>16 = ColdWater<br>17 = Oil<br>18 = NGas<br>19 = DistrictHeating<br>20 = HotWaterVolume<br>21 = HeatingEnergy<br>22 = Steam<br>23 = Electricity3<br>24 = none<br>25 = Condensate<br>26 = HotWaterEnergy<br>27 = DegreeHeatingDays<br>28 = HeatingVolume<br>29 = DistrictHeatingEnergy<br>30 = DistrictHeatingVolume<br>31 = WasteWater<br>32 = StromHT<br>33 = WS_Strom_ET<br>34 = WS_Nutzwasser<br>35 = WS_Brunnenwasser<br>36 = WS_Abwasser<br>37 = WS_Frischwasser<br>38 = WS_Warmwasser<br>39 = WS_Strom_erneuerbar<br>40 = WS_Blindstrom<br>41 = WS_Power<br>42 = WS_Strom_NT<br>43 = WS_Strom_HT<br>44 = WS_Nachtstrom<br>45 = WS_Wood<br>46 = WS_Oil<br>47 = WS_Erdgas<br>48 = WS_DistrictHeating<br>49 = WS_Treibstoff_alternativ<br>50 = Diesel<br>51 = Gasoline<br>52 = WS_ProcessCooling<br>53 = WS_RoomCooling<br>54 = WS_Solar<br>55 = ElectricityNoTariff<br>56 = Biomass<br>57 = Coal<br>58 = Volume<br>59 = RunningHours<br>60 = SpringWater<br>61 = Temperature<br>62 = GeneralElectricity<br>63 = ApparentElectricity<br>64 = ApparentPower<br>65 = Volts<br>66 = Amps<br>67 = Accumulators<br>68 = Papers<br>69 = CombustibleWaste<br>70 = ConstructionWaste<br>71 = ElectronicWaste<br>72 = ElectricCables<br>73 = BottlesGlass<br>74 = IronWaste<br>75 = Chemicals<br>76 = FlourescentTubes<br>77 = Paint<br>78 = Pallets<br>79 = Cardboard<br>80 = Paper<br>81 = PVCWaste<br>82 = HospitalWaste<br>83 = HeatNotToAdjust<br>84 = ElectricityForHeating<br>85 = PET<br>86 = householdwaste<br>87 = specialwaste<br>88 = disposalwaste<br>89 = SuperPlumb<br>90 = GasWeight<br>91 = GasWeightKM<br>92 = GasolineKM<br>93 = SuperPlumbKM<br>94 = DieselKM<br>95 = BudgetHeatMonthly<br>96 = BudgetCoolingMonthly<br>97 = Logbook<br>98 = SteamInterval<br>99 = Benchmarking<br>100 = Biooil<br>101 = Persons<br>102 = Service<br>103 = Production<br>104 = Turnover<br>105 = Nights<br>106 = BudgetHeatBaseline<br>107 = BudgetCoolingBaseline<br>108 = BudgetElectricityBaseline<br>109 = BudgetWaterBaseline<br>110 = DHDemand<br>111 = DHDConsNoDist<br>112 = ChilledWaterInterval<br>113 = Photovoltaik<br>114 = ElectricityForCooling<br>115 = airquality<br>116 = rainwater<br>117 = IntervalGas<br>118 = IntervalHeat<br>119 = temproom<br>120 = humidityrel<br>121 = humidityabs<br>122 = voc<br>123 = efficiency<br>124 = positioningsignal<br>125 = switchingsignal<br>126 = BudgetHotwaterBaseline<br>127 = ElectricCost<br>128 = PowerFactor<br>129 = GasCost<br>130 = FixedGasPrice<br>131 = Trash<br>132 = Recycling<br>133 = solarradiation<br>134 = BudgetGasBaseline<br>135 = BudgetOilBaseline<br>136 = BudgetBiomassBaseline<br>137 = BudgetCoalBaseline<br>138 = BudgetElForHeatBaseline<br>139 = VE_Water<br>140 = eigenwasser<br>141 = processcoolingwater<br>142 = neutra<br>143 = compressed_air<br>144 = BudgetDistrictHeatFlowBaseline<br>145 = BudgetDistrictHeatFlowMonthly<br>146 = BudgetBiomassMonthly<br>147 = BudgetCoalMonthly<br>148 = BudgetHotwaterMonthly<br>149 = BudgetElForHeatingMonthly<br>150 = BudgetGasMonthly<br>151 = BudgetOilMonthly<br>152 = BudgetUnmeasuredSavings<br>153 = BenchmarkHeat<br>154 = ChilledWaterCost<br>155 = chillerRefrigerationPowerSensor<br>157 = Frequency<br>158 = State<br>159 = Pressure<br>160 = Biowaste<br>161 = Tinfoil<br>162 = test_p<br>163 = confidential_waste<br>164 = fat_waste<br>165 = fodder_material<br>166 = waste_water_analysis<br>167 = Beleuchtungsstaerke<br>168 = Wood<br>169 = sprengwasser<br>170 = ph<br>171 = chlorine<br>172 = demi_water<br>173 = reverse_osmosed_water<br>174 = onthard_water<br>175 = Durchfluss<br>176 = Massenstrom<br>177 = Luftfluss<br>178 = Position<br>179 = speed<br>180 = produktion_mass<br>181 = produktion_volume<br>182 = WasteWaterCost<br>183 = SteamCost<br>184 = WaterCost<br>185 = FuelOilCost<br>186 = workplace<br>187 = Bio_oil_waste<br>188 = Wood_waste<br>189 = AirflowMinimum<br>190 = AirflowSetpoint<br>191 = Ratio<br>192 = Range<br>193 = Temp_Setpoint<br>194 = Humidity_Setpoint<br>195 = AirflowSupply<br>196 = AirflowExhaust<br>197 = AirflowBaseVol<br>198 = AirflowSupplyTot<br>199 = AirflowExhaustTot<br>200 = AirflowHoodSetpt<br>201 = AirflowHoodMin<br>202 = BudElPriorY<br>203 = BudHeatPriorY<br>204 = AirflowMinUnocc<br>205 = AirflowHoodExhaust<br>206 = HumidityActual<br>207 = TemperatureActual<br>208 = SashPosition<br>209 = OccupationState<br>210 = ValvePosition<br>211 = coal_cost<br>212 = LiquidPropaneGasCost<br>213 = aufbereitetes_wasser<br>214 = enthaertetes_wasser<br>215 = distilled_water<br>216 = tap_water<br>217 = revolutions<br>219 = Ventilation_Alarm<br>220 = Vol_Diff_Alarm<br>221 = Bio2Waste<br>222 = HazardousWaste<br>223 = PlasticWaste<br>224 = Sludge<br>225 = Manure<br>226 = spuelwasser<br>227 = Conductivity<br>228 = Solid_Material<br>229 = BOD<br>230 = COD<br>231 = Phosphorus<br>232 = Nitrogen<br>233 = Fat<br>234 = dhfnottoadjust<br>235 = Enthalpy<br>236 = CoolingDegreeDays<br>237 = BillElectricity<br>238 = BudgetWasteBaseline<br>243 = ElectricityAirHandling<br>244 = ElectricityCommonUnits<br>245 = ElectricityCompressedAir<br>246 = ElectricityCooling<br>247 = ElectricityDecoration<br>248 = ElectricityDehumidification<br>249 = ElectricityLightning<br>250 = ElectricityConveying<br>251 = ElectricityPeriphery<br>252 = ElectricityProdCooling<br>253 = ElectricityProdEngine<br>254 = ElectricityProdHeating<br>255 = ElectricityProdTotal<br>256 = elektrizitat_mobilitat<br>257 = BaseOpHours<br>258 = RaceMeetings<br>259 = carbon_emission<br>260 = carbon_vehicles<br>261 = kmelektricity<br>262 = speed_pcnt<br>263 = BaselineEnergy<br>264 = PredictedEnergy<br>268 = BaseChillerEfficiency<br>269 = BaseElectricity<br>271 = ActualElectricity<br>272 = PredictedElectricity<br>273 = PredictedChillerEff<br>274 = ChillerPerformanceCOP<br>275 = BaseChillerEffCOP<br>276 = ActuallChillerEffCOP<br>277 = PredictedChillerEffCOP<br>278 = vzCostAvoidance<br>279 = vzBillError<br>280 = vzGasProcure<br>281 = vzPowerProcure<br>282 = vzTariff<br>283 = vzTax<br>284 = vzAccounts<br>285 = vzAccEntered<br>286 = vzAccFlagged<br>287 = vzAccDispute<br>288 = vzAccEnteredPercent<br>289 = vzAccValidatedPercent<br>290 = vzEndexScore3m<br>291 = vzEndexScore12m<br>292 = press_diff<br>293 = press_diff_alarm<br>294 = pvPercentage<br>295 = rainWaterHarvested<br>296 = blackWaterHarvested<br>297 = SBB<br>298 = Occupation<br>299 = solarthermie<br>300 = ertrag_sol_m2<br>301 = ertrag_pvm2<br>99999999 = medium_driven<br>100000000 = AmpsPercent<br>100000001 = LoadPercent<br>100000002 = UnitOccupied<br>100000003 = MixedAirTemp<br>100000004 = MixedAirTempSet<br>100000006 = ReturnAirTemp<br>100000007 = DischargeAirTemp<br>100000008 = DischargeAirTempSet<br>100000009 = HeatingValvePct<br>100000010 = CoolingValvePct<br>100000011 = UnitSupply<br>100000012 = MixedAirDamperPct<br>100000013 = SupplyFanStatus<br>100000014 = preheatAirTemp<br>100000015 = EndDuctStaticPress<br>100000016 = DischargeStaticPressUnit<br>100000017 = DischargeStaticPressSet<br>100000018 = OutdoorAirDampPct<br>100000019 = OutdoorAirFlow<br>100000020 = ReturnAirFlow<br>100000021 = SupplyAirFlow<br>100000022 = FaceBypassPct<br>100000023 = ReturnAirHumidity<br>100000024 = RoomHumidity<br>100000025 = PreheatAirTempSetpoint<br>100000026 = SupplyFanVFD<br>100000027 = ReturnFanVFD<br>100000028 = GasFlow<br>100000029 = energyStarRating<br>100000030 = HeatBalance<br>100000031 = pa_guaranteed_savings<br>100000032 = pa_calculated_savings<br>100000033 = pa_actual_savings<br>100000034 = LightingPowerBudget<br>100000035 = Solar_Radiation_Direct<br>100000036 = Solar_Radiation_Diffuse<br>100000037 = Solar_Radiation_Direct_Diffuse<br>100000038 = azimuth<br>100000039 = TOC<br>100000040 = condenserWaterReturnTemp<br>100000041 = condenserWaterSupplyTemp<br>100000042 = chillerWaterReturnTemp<br>100000043 = chillerWaterSupplyTemp<br>100000044 = Condensmass<br>100000045 = TemperatureSupplyActual<br>100000046 = TemperatureSupplySetpt<br>100000048 = TemperatureReturnSetpt<br>100000051 = HumidityReturnActual<br>100000052 = HumidityReturnSetpoint<br>100000053 = SupplyStaticPressAct<br>100000054 = SupplyStaticPressSet<br>100000055 = AirqualityCO2<br>100000056 = AirqualityCO2setpoint<br>100000057 = chiller_status<br>100000058 = chiller_outside_set<br>100000059 = CO2_Setpoint<br>100000060 = hot_water_supply_temp<br>100000061 = hot_water_return_tmp<br>100000062 = chilled_water_inlet_temp<br>100000063 = chilled_water_outlet_temp<br>100000064 = chilled_water_outlet_temp_set<br>100000065 = hot_water_inlet_temp<br>100000066 = hot_water_outlet_temp<br>100000067 = hot_water_outlet_temp_set<br>100000068 = valve_control<br>100000069 = damper_control<br>100000070 = control_signal<br>100000071 = heat_recovery_valve_percent<br>100000072 = heat_recovery_temp<br>100000073 = outside_air_humidity<br>100000074 = outside_air_humidity_enthalpy<br>100000075 = return_air_humidity_setpoint<br>100000076 = return_air_humidity_enthalpy<br>100000077 = return_air_temp_setpoint<br>100000078 = return_fan_status<br>100000080 = condens_water_sup_temp_set<br>100000082 = exhaust_fan_status<br>100000083 = climatic_cooling<br>100000084 = technical_cooling<br>100000085 = industrial_cooling<br>100000086 = gas_demand<br>100000087 = hot_water_demand<br>100000088 = BudgetGuarSavHeat<br>100000089 = BudgetGuarSavCooling<br>100000090 = BudgetGuarSavElectricity<br>100000091 = BudgetGuarSavWater<br>100000092 = BudgetGuarSavHotWater<br>100000093 = BudgetGuarSavGas<br>100000094 = BudgetGuarSavOil<br>100000095 = BudgetGuarSavBiomass<br>100000096 = BudgetGuarSavCoal<br>100000097 = BudgetGuarSavElforHeat<br>100000098 = warmup_mode<br>100000099 = night_override_mode<br>100000100 = night_heating_mode<br>100000101 = BudgetDistrictHeatMonthly<br>100000102 = BudgetDistrictHeatBaseline<br>100000103 = BudgetSteamBaseline<br>100000104 = BudgetSteamMonthly<br>100000105 = BudgetWasteWaterBaseline<br>100000106 = BudgetGuarSaveWasteWater<br>100000107 = BudgetWellWaterBaseline<br>100000108 = BudgetGuarSaveWellWater<br>100000109 = BudgetGuarSaveSteam<br>100000110 = budgetguarSaveDistrHeat<br>100000111 = BudgetPhotovoltaicBaseline<br>100000112 = BudgetGuarSavePhotovoltaic<br>100000113 = BudgetElectrSingleRateBaseline<br>100000114 = BudgetGuarSaveElectrSingleRate<br>100000115 = BudgetElectrSpecTariffBaseline<br>100000116 = BudgetDemandBaseline<br>100000117 = BudgetGuarSaveDemand<br>100000118 = BudgetDemandMonthly<br>100000119 = BudgetCoolingActual<br>100000120 = BudgetElectricityActual<br>100000121 = BudgetElForHeatingActual<br>100000122 = BudgetWaterActual<br>100000123 = BudgetGasActual<br>100000124 = BudgetDHFActual<br>100000125 = BudgetOilActual<br>100000126 = BudgetDemandActual<br>100000127 = BudgetHeatActual<br>100000128 = BudgetBiomassActual<br>100000129 = BudgetCoalActual<br>100000130 = valve_control_v<br>100000131 = valve_control_ma<br>100000132 = valve_control_perc<br>100000133 = sup_air_humidity_set<br>100000134 = supply_air_humidity<br>100000135 = suuply_air_flow_setpoint<br>100000136 = suction_static_pres_set<br>100000137 = suction_static_press_psi<br>100000138 = suction_static_press_inwc<br>100000139 = speed_v<br>100000140 = speed_ma<br>100000141 = pressure_set<br>100000142 = hw_out_air_enab_temp_set<br>100000143 = humidifier_status<br>100000144 = hw_sup_temp_set<br>100000145 = hw_out_air_enab_t_set<br>100000146 = fan_control<br>100000147 = exhaust_temp<br>100000148 = exhaust_stat_pres_set<br>100000149 = exhaust_air_hum_set<br>100000150 = exhaust_air_humidity<br>100000151 = exhaust_air_flow_set<br>100000152 = exhaust_air_flow<br>100000153 = district_cooling_energy<br>100000154 = damper_perc<br>100000155 = control_signal_perc<br>100000156 = chil_water_ret_temp_set<br>100000157 = Rainfall<br>100000158 = suction_stat_pres_unit<br>100000159 = chill_water_sup_temp_set<br>100000160 = relative_humidity_setpoint<br>100000161 = BudgetGuarSaveElectrSpecial<br>100000162 = RoomStaticPressure<br>100000163 = RoomStaticPressureSetpt<br>100000164 = status_max<br>100000165 = room_static_pressure<br>100000166 = room_static_pressure_setpoint<br>100000167 = vav_box_air_volume<br>100000168 = vav_box_discharge_temp<br>100000169 = vav_box_cont_max_air_flow<br>100000170 = vav_box_controller_setpoint<br>100000171 = vav_box_day_cooling_setpoint<br>100000172 = vav_box_day_heating_setpoint<br>100000173 = vav_box_damper_command<br>100000174 = vav_box_air_flow_setpoint<br>100000175 = vav_box_heat_cool_mode<br>100000176 = vav_box_room_temperature<br>100000177 = vav_box_reheat_valve_command<br>100000178 = Status_AHU_Media<br>100000179 = Status_Area_Meter<br>100000180 = WasteDangerous<br>100000181 = WasteNotDangerous<br>100000182 = WasteEliminate<br>100000183 = WasteRecyclable<br>100000184 = crudeOil<br>100000185 = FuelOilNo2<br>100000186 = FuelOilNo4<br>100000187 = FuelOilNo6<br>100000188 = Argon<br>100000189 = ArgonCost<br>100000190 = Biodiesel<br>100000191 = BiodieselCost<br>100000192 = BlackLiquor<br>100000193 = BlackLiqourCost<br>100000194 = CarbonMonoxide<br>100000195 = CarbonMonoxideCost<br>100000196 = CarbonDioxide<br>100000197 = CarbonDioxideCost<br>100000198 = CokeBreeze<br>100000199 = CokeBreezeCost<br>100000200 = Compost<br>100000201 = CompostCost<br>100000202 = DieselCost<br>100000203 = ElectricitySupply<br>100000204 = ElectricitySupplyCost<br>100000205 = ElectricityOnPeakCost<br>100000206 = ElectricityOffPeakCost<br>100000207 = ElectricityMidPeak<br>100000208 = ElectricityMidPeakCost<br>100000209 = FuelOilNo2Cost<br>100000210 = FuelOilNo3<br>100000211 = FuelOilNo3Cost<br>100000212 = FuelOilNo4Cost<br>100000213 = FuelOilNo5<br>100000214 = FuelOilNo5Cost<br>100000215 = FuelOilNo6Cost<br>100000216 = GasolineCost<br>100000217 = Helium<br>100000218 = HeliumCost<br>100000219 = Hydrogen<br>100000220 = HydrogenCost<br>100000221 = Kerosene<br>100000222 = KeroseneCost<br>100000223 = LiquidNaturalGas<br>100000224 = LiquidNaturalGasCost<br>100000225 = LiquidPropaneGas<br>100000226 = NaturalGasSupply<br>100000227 = NaturalGasSupplyCost<br>100000228 = NaturalGasPipeline<br>100000229 = NaturalGasPipelineCost<br>100000230 = NitrogenCost<br>100000231 = Oxygen<br>100000232 = OxygenCost<br>100000233 = PetCoke<br>100000234 = PetCokeCost<br>100000235 = Propane<br>100000236 = PropaneCost<br>100000237 = RecyclingCost<br>100000238 = RecycledOil<br>100000239 = RecycledOilCost<br>100000242 = SludgeCost<br>100000243 = StormwaterCost<br>100000244 = Telecom<br>100000245 = TelecomCost<br>100000246 = TrashCost<br>100000247 = ElectrcicitySingleRateHedge<br>100000248 = BudgetGuarSaveElectrNoTarif<br>100000249 = BudgetGuarSavingsChilWater<br>100000250 = Budget_Weather_Ind_Oil<br>100000251 = Budget_Weather_Ind_Gas<br>100000252 = Budget_Weather_Ind_Heat<br>100000253 = Budget_Weather_Ind_Dist_Heat<br>100000254 = Budget_Weather_Ind_Biomass<br>100000255 = Budget_Weather_Ind_Elec_Heat<br>100000256 = Budget_Weather_Ind_Elec_Cool<br>100000257 = Budget_Weather_Ind_Cooling<br>100000258 = Budget_Weather_Ind_Steam<br>100000259 = Budget_Weather_Ind_Coal<br>100000260 = vzCyclical<br>100000261 = vzDepositRefund<br>100000262 = vzEnergyEfficiency<br>100000263 = vzFacEvalGas<br>100000264 = vzFacEvalPower<br>100000265 = vzHedgeProgram<br>100000266 = vzHistBillErr<br>100000267 = vzOperational<br>100000268 = vzPunctual<br>100000269 = vzRFP<br>100000270 = vzSavings<br>100000271 = vzStructural<br>100000272 = vzValueAdded<br>100000273 = NaturalGasHedge<br>100000274 = ElectricityOffPeakHedge<br>100000275 = FuelOilNo2Hedge<br>100000276 = FuelOilNo6Hedge<br>100000277 = CrudeOilHedge<br>100000278 = CoalHedge<br>100000279 = BudgetSavingsBaseline<br>100000280 = BudgetGuarSavings<br>100000281 = paCalculations<br>100000282 = SpecificFanPower<br>100000283 = BudgetUAWasteWater<br>100000284 = BudgetUABiomass<br>100000285 = BudgetUAHotWater<br>100000286 = BudgetUAWellWater<br>100000287 = BudgetUAElectrNoTarif<br>100000288 = BudgetUASteam<br>100000289 = BudgetUADHF<br>100000290 = BudgetUAGas<br>100000291 = BudgetUACoal<br>100000292 = BudgetUACooling<br>100000293 = BudgetUADemand<br>100000294 = BudgetUAPhotovoltaic<br>100000295 = BudgetUAElForHeat<br>100000296 = BudgetUAElectricity<br>100000297 = BudgetUAElSingle<br>100000298 = BudgetUAElSpecial<br>100000299 = BudgetUAWater<br>100000300 = BudgetUAHeat<br>100000301 = BudgetUAOil<br>100000303 = BudgetGuarSaveDHFVol<br>100000304 = BudgetUADHF_Volume<br>100000305 = BudgetUAElHighTarif<br>100000306 = BudgetUAElLowTarif<br>100000307 = SteamProcess<br>100000308 = BudgetSteamProcessBaseline<br>100000309 = BudgetGuarSteamProcess<br>100000310 = BudgetUASteamProcess<br>100000311 = BudgetGuarSaveReactivePower<br>100000312 = BudgetGuarSaveGasPower<br>100000313 = BudgetGuarSaveElectricityHT<br>100000314 = BudgetGuarSaveElectricityLT<br>100000315 = BudgetGuarSaveElCooling<br>100000316 = BudgetReactivePowerBaseline<br>100000317 = BudgetGasPBaseline<br>100000318 = BudgetElHTBaseline<br>100000319 = BudgetElNTBaseline<br>100000320 = BudgetElCoolingBaseline<br>100000321 = BudgetUAReactivePower<br>100000322 = BudgetUAGasPower<br>100000323 = BudgetUAElCooling<br>100000324 = OperationalCosts<br>100000325 = Blindleistung<br>100000326 = Brunnenwasser<br>100000327 = BudgetDHFPowerBaseline<br>100000328 = BudgetGuarSaveDHFPower<br>100000329 = BudgetUADHFPower<br>100000330 = CompressedNaturalGas<br>100000331 = BioGas<br>100000332 = Ethanol<br>100000333 = JetFuel<br>100000334 = WastemmBtu<br>100000335 = GroundWater<br>100000336 = SurfaceWater<br>100000337 = GreyWater<br>100000338 = GasSubsidies<br>100000339 = ElectricitySubsidies<br>100000340 = BudgetElSubsidiesBaseline<br>100000341 = BudgetGasSubsidiesBaseline<br>100000342 = BudgetGuarSaveElSubsidies<br>100000343 = BudgetGuarSaveGasSubsidies<br>100000344 = BudgetUAElectrSubsidies<br>100000345 = BudgetUAGasSubsidies<br>100000346 = OperationalCostBaseline<br>100000347 = OperationalCostGarSave<br>100000348 = OperationalCostUsAdj<br>100000349 = RunningHoursBaseline<br>100000350 = RunningHoursGuarSave<br>100000351 = RunningHoursUsgAdj<br>100000352 = BiodieselMobile<br>100000353 = DieselMobile<br>100000354 = EthanolMobile<br>100000355 = GasolineMobile<br>100000356 = JetFuelMobile<br>100000357 = CNGMobile<br>100000358 = brownWater<br>100000359 = stormWater<br>100000360 = sewage<br>100000361 = wasteWaterPOTW<br>100000362 = nonHazWasteWater<br>100000363 = nonHazWaszeWaterWWTP<br>100000364 = surfaceWaterDischarge<br>100000365 = groundWaterDischarge<br>100000366 = hazWasteWater<br>100000367 = hazWasteWaterRecycle<br>100000368 = hazWasteWaterWWTP<br>100000369 = hazWasteWaterTreatOff<br>100000370 = hazWasteWaterTreatOn<br>100000371 = solidWaste<br>100000372 = solidWasteInclinerated<br>100000373 = solidWasteWTE<br>100000374 = wasteRecycle<br>100000375 = wasteRecycleNonPaper<br>100000376 = wasteRecyclePaper<br>100000377 = nonHazCnDWaste<br>100000378 = nonHazCnDWasteRecycle<br>100000379 = nonHazTreatedWaste<br>100000380 = hazWasteIncineration<br>100000381 = hazWasteStoredOnsite<br>100000382 = hazWasteRecycle<br>100000383 = hazWasteWTE<br>100000384 = hazCnDWaste<br>100000385 = hazCnDWasteRecycle<br>100000386 = hazCnDWastwIncineration<br>100000387 = hazCnDWasteWTE<br>100000388 = hazWasteTreated<br>100000389 = chillerOccupiedSensor<br>100000390 = chillerPowerSensor<br>100000391 = chillerCurrentSensor<br>100000392 = chillerEnergySensor<br>100000393 = chillerPlantOccupiedSensor<br>100000394 = chillerChilledWaterLeavingTempSensor<br>100000395 = chillerChilledWaterEnteringTempSensor<br>100000396 = chillerCondenserWaterLeavingTempSensor<br>100000397 = chillerCondenserWaterEnteringTempSensor<br>100000398 = chillerEfficiency<br>100000399 = chillerChilledWaterEnergySensor<br>100000400 = chillerPlantEfficiency<br>100000401 = coolingTowerOccupiedSensor<br>100000402 = coolingTowerCondenserWaterEnteringTempSensor<br>100000403 = coolingTowerCondenserWaterLeavingTempSensor<br>100000404 = wetBulbTempSensor<br>100000405 = coolingTowerPowerSensor<br>100000406 = coolingTowerEnergySensor<br>100000407 = chillerPlantEnergySensor<br>100000408 = chillerPlantChilledWaterEnergySensor<br>100000409 = SteamHeating<br>100000410 = alcoholBottoms<br>100000411 = crudePalmOil<br>100000412 = geoThermal<br>100000413 = paperFines<br>100000414 = aviationGasoline<br>100000415 = codSurfaceWaterDischarge<br>100000416 = codSewerPOTWDischarge<br>100000417 = codOffsiteWWTP<br>100000418 = codGroundDischarge<br>100000419 = particulates<br>100000420 = ElectricityHotWater<br>100000421 = Tonne_Sales<br>100000422 = Standard_Hours<br>100000423 = Other_Water<br>100000424 = ElectricityGenCHP<br>100000425 = ElectricityGenPV<br>100000426 = ElectricityGenRegen<br>100000427 = ElectricityGenEmergency<br>100000428 = HeatGenCHP<br>100000429 = HeatGenConventional<br>100000430 = HeatGenBiomass<br>100000431 = HeatGenHeatpump<br>100000432 = HeatGenSolarthermic<br>100000433 = ColdGenerated<br>100000434 = SteamGenerated<br>100000435 = CompressedAirGen<br>100000436 = ElectricitySupplyCHP<br>100000437 = ElectricitySupplyPV<br>100000438 = ElectricitySupplyRegen<br>100000439 = ElectricitySupplyEmergency<br>100000440 = HeatSupplyCHP<br>100000441 = HeatSupply<br>100000442 = ColdSupply<br>100000443 = SteamSupply<br>100000444 = CompressedAirSupply<br>100000445 = chillerChilledWaterDeltaTemp<br>100000446 = chillerCondenserWaterDeltaTemp<br>100000447 = chilledWaterDistributionSecondaryLoopEnteringTempSensor<br>100000448 = chilledWaterDistributionSecondaryLoopLeavingTempSensor<br>100000449 = chilledWaterDistributionSecondaryLoopDeltaTemp<br>100000450 = chillerPlantRefrigerationPower<br>100000451 = chilledWaterDistributionDeltaTemp<br>100000452 = chilledWaterDistributionEnteringTempSensor<br>100000453 = chilledWaterDistributionLeavingTempSensor<br>100000454 = chillerPlantPowerSensor<br>100000455 = chilledWaterDistributionDecouplerTempSensor<br>100000456 = chilledWaterDistributionPumpPower<br>100000457 = chilledWaterDistributionSecondaryLoopPumpPower<br>100000458 = coolingTowerCondenserWaterDeltaTemp<br>100000459 = CO2 Industrial<br>100000460 = Nitrogen Industrial<br>100000461 = vzClosure<br>100000462 = vzInvoiceManagement<br>100000463 = vzFuelOilProcurement<br>100000464 = vzPropaneProcurement<br>100000465 = vzDemandSideManagement<br>100000466 = vzCoalProcurement<br>100000467 = vzFuelManagementSupport<br>100000468 = vzLeakAdjustment<br>100000469 = vzEnergyProcurement<br>
+    </p></td>
+    <td><p>Indicates the purpose the measured resource is used for (Media Group in the Advantage Navigator web
+        front-end). </p></td>
+</tr>
+<tr>
+    <td><p>5</p></td>
+    <td><p>medium</p></td>
+    <td><p>required</p></td>
+    <td><p>Integer</p></td>
+    <td><p>
+        
+        
+        1 = HeatingEnergy<br>3 = FuelOilNo2<br>4 = NGas<br>5 = DistrictHeatingEnergy<br>6 = Electricity<br>7 = ColdWater<br>9 = HotWaterVolume<br>11 = Electricity1<br>12 = Electricity2<br>13 = Electricity3<br>14 = Power<br>15 = Cooling<br>16 = DistrictHeatingVolume<br>17 = HeatingVolume<br>18 = HotWaterEnergy<br>19 = DegreeHeatingDays<br>20 = OutsideTemp<br>21 = None<br>22 = WasteWater<br>23 = WS_Strom_ET<br>24 = WS_Strom_HT<br>25 = WS_Strom_NT<br>26 = WS_Power<br>27 = Photovoltaik<br>28 = Windenergie<br>29 = WS_DistrictHeating<br>30 = Erdgas<br>31 = Fluessiggas<br>32 = Heizoel_EL<br>33 = Heizoel<br>34 = Hackschnitzel<br>35 = Brennholz<br>36 = Nachtstrom<br>37 = Solarwaerme<br>38 = Erdwaerme<br>39 = Warmwasser<br>40 = Kaltwasser<br>41 = WS_Abwasser<br>42 = WS_Brunnenwasser<br>43 = WS_Nutzwasser<br>44 = WS_ProcessCooling<br>45 = WS_RoomCooling<br>46 = Gasoline<br>47 = Super<br>48 = Super_plus<br>49 = Diesel<br>50 = Biodiesel<br>51 = WS_Blindstrom<br>52 = FuelOilNo4<br>53 = FuelOilNo6<br>54 = Coal<br>55 = RunningHours<br>56 = ElectricityNoTariff<br>57 = Heat<br>58 = Steam<br>59 = Volume<br>60 = SpringWater<br>61 = Biogas<br>62 = Temperature<br>63 = Pellets<br>64 = Amps<br>65 = ApparentElectricity<br>66 = ApparentPower<br>67 = GeneralElectricity<br>68 = Volts<br>69 = Accumulators<br>70 = Papers<br>71 = CombustibleWaste<br>72 = ConstructionWaste<br>73 = Elektroschrott<br>74 = ElectricCables<br>75 = BottlesGlass<br>76 = IronWaste<br>77 = Chemicals<br>78 = FluorescentTubes<br>79 = Paint<br>80 = Pallets<br>81 = Cardboard<br>82 = Paper<br>83 = PVCWaste<br>84 = HospitalWaste<br>85 = ElectricityForHeating<br>86 = PET<br>87 = householdwaste<br>88 = disposalwaste<br>89 = specialwaste<br>90 = SuperPlumb<br>91 = GasWeight<br>92 = GasolineKM<br>93 = SuperPlumbKM<br>94 = DieselKM<br>95 = GasWeightKM<br>96 = Logbook<br>97 = BudgetMonthly<br>98 = SteamInterval<br>99 = BioHeat<br>100 = Biooil<br>101 = Service<br>102 = Production<br>103 = Turnover<br>104 = Nights<br>105 = Benchmarking<br>106 = Persons<br>107 = BudgetBaseline<br>108 = BudgetBaselineWater<br>109 = DHDemand<br>110 = ChilledWaterInterval<br>111 = ElectricityForCooling<br>112 = airquality<br>113 = rainwater<br>114 = IntervalGas<br>115 = IntervalHeat<br>116 = temproom<br>117 = humidityrel<br>118 = humidityabs<br>119 = voc<br>120 = efficiency<br>121 = positioningsignal<br>122 = switchingsignal<br>123 = ElectricCost<br>124 = PowerFactor<br>125 = GasCost<br>126 = FixedGasPrice<br>127 = Kehricht<br>128 = Recycling<br>129 = solarradiation<br>130 = VE_Water<br>131 = eigenwasser<br>132 = processcoolingwater<br>133 = neutra<br>134 = compressed_air<br>135 = BudgetBaselineVolume<br>136 = BudgetElectricityBaseline<br>137 = BenchmarkHeat<br>138 = BenchmarkElectricity<br>139 = BenchmarkWater<br>140 = ChilledWaterCost<br>141 = ChillerPerformance<br>142 = Pressure<br>143 = Frequency<br>144 = State<br>145 = Biowaste<br>147 = Beleuchtungsstaerke<br>148 = Acidity<br>149 = Solid_Material<br>150 = Phosphorus<br>151 = Nitrogen<br>152 = Fat<br>153 = Conductivity<br>154 = wood<br>155 = tinfoil<br>156 = cofidential_waste<br>157 = fat_waste<br>158 = fodder<br>159 = biological_oxygen_demand<br>160 = chemical_oxygen_demand<br>161 = sprengwasser<br>162 = Chlorine<br>163 = pH<br>164 = demi_water<br>165 = reversed_osmosed_water<br>166 = onthard_water<br>167 = fernwaerme_konstantleiter<br>168 = fernwaerme_gleitleiter<br>169 = redoxpotential<br>171 = chlorine_ppm<br>173 = Durchfluss<br>174 = Kondensat<br>175 = Massenstrom<br>176 = Luftfluss<br>177 = Position<br>178 = speed<br>179 = production_mass<br>180 = produktion_volumen<br>181 = WasteWaterCost<br>182 = WaterCost<br>183 = FuelOilCost<br>184 = SteamCost<br>185 = workplace<br>187 = Woodwaste<br>188 = Bio_oilwaste<br>189 = Airflow_min<br>190 = Airflow_stpt<br>191 = Airflow_Exhaust<br>192 = Airflow_Base<br>193 = Airflow_Supply<br>194 = Airflow_SupplyTot<br>195 = Temperature_Setpt<br>196 = Airflow_ExhaustTot<br>197 = Airflow_HoodSetpoint<br>198 = Airflow_HoodMin<br>199 = Airflow_MinUnocc<br>200 = DegreeCoolingDays<br>201 = Airflow_HoodExhaust<br>202 = Humidity_Actual<br>203 = Temperature_Actual<br>204 = Sash_Position<br>205 = Occupation_Status<br>206 = Valve_Position<br>207 = Humidity_Setpt<br>208 = coalcost<br>209 = lpg_cost<br>210 = butangas<br>211 = aufbereitetes_wasser<br>212 = enthaertetes_wasser<br>213 = tap_water<br>214 = distilled_water<br>215 = revolutions<br>216 = VentilationAlarm<br>217 = VolumeDiffAlarm<br>218 = BenchmChillPerf<br>219 = BenchmarkPower<br>220 = Bio2Waste<br>221 = HazardousWaste<br>222 = PlasticWaste<br>223 = Sludge<br>224 = Manure<br>225 = spuelwasser<br>226 = BenchmarkCooling<br>227 = Z1_Solarertrag<br>228 = Z2_Raumwaerme<br>229 = Z3_RLTemperatur<br>230 = Z4_StromAllg<br>231 = Z5_StromHeiz<br>232 = Z6_StromBWW<br>233 = Z7_HeizenGas<br>234 = Z7_HeizenOel<br>235 = Z7_HeizenPellets<br>236 = Z7_HeizenHackgut<br>237 = Z7_HeizenWaerme<br>238 = Z8_StromLueftung<br>239 = Z9_HeizenWaerme<br>240 = Z10_BWWMenge<br>241 = Z11_BWWEnergie<br>242 = Enthalpy<br>243 = BillElectricity<br>244 = hk_clp_lpt<br>245 = hk_clp_gst<br>247 = BudgetWasteBaseline<br>252 = BudgetOilBaseline<br>253 = Reactive_Power<br>254 = specific_enthalpy<br>255 = km_elektrizitat<br>256 = BaseOpHours<br>257 = RaceMeetings<br>258 = carbon_emission<br>259 = carbon_vehicles<br>260 = elctricity_mobility<br>261 = speed2<br>262 = BaselineEnergy<br>263 = PredictedEnergy<br>264 = hk_clp_bt<br>265 = ChillerPerformanceCOP<br>266 = food_waste<br>267 = hk_hek_cim<br>268 = hk_hek_md<br>269 = vzSavings<br>270 = vzAccounts<br>271 = vzEndexScores<br>272 = press_diff<br>273 = press_diff_alarm<br>274 = pvPercentage<br>275 = waterHarvestined<br>276 = mmRain<br>277 = Gleisaushub<br>278 = Personenkilometer<br>279 = Nettotonnenkilometer<br>280 = Anzahl_Reklamationen<br>281 = Ern_Energie_Bahnstrom<br>282 = Umweltimage<br>283 = Occupation<br>284 = ertragsol_m2<br>285 = Ertragpv_m2<br>286 = AmpsPercent<br>287 = LoadPercent<br>288 = UnitOccupied<br>289 = MixedAirTemp<br>290 = MixedAirTempSet<br>292 = ReturnAirTemp<br>293 = DischarcheAirTemp<br>294 = DischargeAirTempSet<br>295 = HeatingValvePct<br>296 = CoolingValvePct<br>297 = UnitSupply<br>298 = MixedAirDamperPct<br>299 = SupplyFanStatus<br>300 = preheatAirTemp<br>301 = EndDuctStaticPress<br>302 = DischargeStaticPressUnit<br>303 = DischargeStaticPressSet<br>304 = OutdoorAirDampPct<br>305 = OutdoorAirFlow<br>306 = ReturnAirFlow<br>307 = SupplyAirFlow<br>308 = FaceBypassPct<br>309 = ReturnAirHumidity<br>310 = RoomHumidity<br>311 = SupplyFanVFD<br>312 = ReturnFanVFD<br>313 = PreheatAirSetpoint<br>314 = gasflow<br>315 = HeatBalance<br>316 = pa_savings<br>317 = LightingPowerBudget<br>318 = Solar_Radiation_Direct<br>319 = Solar_Radiation_Diffuse<br>320 = Solar_Radiation_Direct_Diffuse<br>321 = azimuth<br>322 = TOC<br>323 = Condensate<br>325 = TemperatureSupplyActual<br>326 = TemperatureSupplySetpt<br>327 = TemperatureReturnSetpt<br>328 = HumidityReturnActual<br>329 = HumidityReturnSetpoint<br>330 = SupplyStaticPressAct<br>331 = SupplyStaticPressSet<br>332 = AirqualityCO2<br>333 = AirqualityCO2setpoint<br>334 = chiller_status<br>335 = chiller_out_air_temp_set<br>336 = CO2_Setpoint<br>337 = chilled_water_supply_temp<br>338 = chilled_water_return_temp<br>339 = hot_water_supply_temp<br>340 = hot_water_return_temp<br>341 = chilled_water_inlet_temp<br>342 = chilled_water_outlet_temp<br>343 = chilled_water_outlet_temp_set<br>344 = hot_water_inlet_temp<br>345 = hot_water_outlet_temp<br>346 = hot_water_outlet_temp_set<br>347 = valve_control<br>348 = damper_control<br>349 = control_signal_MV<br>350 = control_signal_ma<br>351 = heat_recovery_valve_percent<br>352 = heat_recovery_temp<br>353 = outside_air_humidity<br>354 = outside_air_humidity_enthalpy<br>355 = return_air_humidity_setpoint<br>356 = return_air_humidity_enthalpy<br>357 = return_air_temp_setpoint<br>358 = return_fan_status<br>359 = condenser_water_supply_temp<br>361 = condense_water_sup_temp_set<br>362 = condens_water_return_temp<br>363 = exhaust_fan_status<br>364 = warmup_mode<br>365 = night_override_mode<br>366 = night_heating_mode<br>367 = BudgetActual<br>368 = valve_control_v<br>369 = valve_control_ma<br>370 = valve_control_perc<br>371 = sup_air_humidity_set<br>372 = supply_air_humidity<br>373 = suuply_air_flow_setpoint<br>374 = suction_static_pres_set<br>375 = speed_v<br>376 = speed_ma<br>377 = pressure_set<br>378 = hw_out_air_enab_temp_set<br>379 = humidifier_status<br>380 = hw_sup_temp_set<br>381 = fan_control<br>382 = exhaust_temp<br>383 = exhaust_stat_pres_set<br>384 = exhaust_air_hum_set<br>385 = exhaust_air_humidity<br>386 = exhaust_air_flow_set<br>387 = exhaust_air_flow<br>388 = district_cooling_energy<br>389 = damper_perc<br>390 = control_signal_perc<br>391 = chil_water_ret_temp_set<br>392 = Rainfall<br>393 = suction_stat_pres_unit<br>394 = relative_humidity_setpoint<br>395 = chill_water_supp_temp_set<br>396 = budgetBaselineDemand<br>397 = room_static_pressure<br>398 = room_static_pressure_setpoint<br>399 = vav_box_air_volume<br>400 = vav_box_control_max_air_flow<br>401 = vav_box_controller_setpoint<br>402 = vav_box_day_cooling_setpoint<br>403 = vav_box_day_heating_setpoint<br>404 = vav_box_damper_command<br>405 = vav_box_air_flow_setpoint<br>406 = vav_box_heat_cool_mode<br>407 = vav_box_room_temperature<br>408 = vav_box_reheat_valve_command<br>409 = AHU_Evaluate_Trigger<br>410 = Area_Evaluation_Trigger<br>411 = WasteDangerous<br>412 = WasteNotDangerous<br>413 = WasteEliminate<br>414 = WasteRecyclable<br>415 = crudeOil<br>416 = Argon<br>417 = ArgonCost<br>418 = BiodieselCost<br>419 = BlackLiqourCost<br>420 = BlackLiqour<br>421 = CarbonMonoxideCost<br>422 = CarbonMonoxide<br>423 = CarbonDioxideCost<br>424 = CarbonDioxide<br>425 = CokeBreezeCost<br>426 = CokeBreeze<br>427 = CompostCost<br>428 = Compost<br>429 = DieselCost<br>430 = ElectricitySupplyCost<br>431 = ElectricitySupply<br>432 = ElectricityOnPeakCost<br>433 = ElectricityOffPeakCost<br>434 = ElectricityMidPeakCost<br>435 = ElectricityMidPeak<br>436 = FuelOilNo2Cost<br>437 = FuelOilNo3<br>438 = FuelOilNo3Cost<br>439 = FuelOilNo4Cost<br>440 = FuelOilNo5<br>441 = FuelOilNo6Cost<br>442 = FuelOilNo5Cost<br>443 = GasolineCost<br>444 = HeliumCost<br>445 = Helium<br>446 = HydrogenCost<br>447 = Hydrogen<br>448 = KeroseneCost<br>449 = Kerosene<br>450 = LiquidNaturalGasCost<br>451 = LiquidNaturalGas<br>452 = NaturalGasSupplyCost<br>453 = NaturalGasSupply<br>454 = NaturalGasPipelineCost<br>455 = NaturalGasPipeline<br>456 = NitrogenCost<br>457 = OxygenCost<br>458 = Oxygen<br>459 = PetCokeCost<br>460 = PetCoke<br>461 = PropaneCost<br>462 = Propane<br>463 = RecyclingCost<br>464 = RecycledOilCost<br>465 = RecycledOil<br>466 = SludgeCost<br>467 = StormwaterCost<br>468 = TelecomCost<br>469 = Telecom<br>470 = TrashCost<br>471 = ElectricitySingleRateHedge<br>482 = Budget_Weather_Ind<br>484 = ElectricityOffPeakHedge<br>485 = NaturalGasHedge<br>486 = FuelOilNo2Hedge<br>487 = FuelOilNo6Hedge<br>488 = CoalHedge<br>489 = CrudeOilHedge<br>490 = hackschnitzel_gewicht<br>491 = BudgetSavings<br>492 = Pellets_Gewicht<br>493 = SpecificFanPower<br>494 = OperationalCosts<br>495 = SteamProcess<br>496 = GasDemand<br>497 = GroundWater<br>498 = SurfaceWater<br>499 = GreyWater<br>500 = GasSubsidies<br>501 = ElectricitySubsidies<br>502 = BiodieselMobile<br>503 = DieselMobile<br>504 = GasolineMobile<br>505 = EthanolMobile<br>506 = CNGMobile<br>507 = JetFuelMobile<br>508 = LPG<br>509 = brownWater<br>510 = stormWater<br>511 = sewage<br>512 = wasteWaterPOTW<br>513 = nonHazWasteWater<br>514 = nonHazWaszeWaterWWTP<br>515 = surfaceWaterDischarge<br>516 = groundWaterDischarge<br>517 = hazWasteWater<br>518 = hazWasteWaterRecycle<br>519 = hazWasteWaterWWTP<br>520 = hazWasteWaterTreatOff<br>521 = hazWasteWaterTreatOn<br>522 = nonHazardousWaste<br>523 = SteamHeating<br>524 = alcoholBottoms<br>525 = crudePalmOil<br>526 = paperFines<br>527 = geoThermal<br>528 = aviationGasoline<br>529 = codSurfaceWaterDischarge<br>530 = codSewerPOTWDischarge<br>531 = codOffsiteWWTP<br>532 = codGroundDischarge<br>533 = particulates<br>534 = ElectricityHotWater<br>535 = Tonne_Sales<br>536 = Standard_Hour<br>537 = Other_Water<br>538 = Medium<br>539 = ElectricityGeneratedCHP<br>540 = ElectricityGeneratedPV<br>541 = ElectricityGeneratedReg<br>542 = ElectricityGeneratedEmergency<br>543 = ElectricitySupplyCHP<br>544 = ElectricitysupplyPV<br>545 = ElectricitySupplyRegener<br>546 = ElectricitySupplyEmergency<br>547 = HeatGeneratedCHP<br>548 = HeatGeneratedConventional<br>549 = HeatGeneratedBiomass<br>550 = HeatGeneratedHeatpump<br>551 = HeatGeneratedSolar<br>552 = HeatSupplyCHP<br>553 = HeatSupply<br>554 = ColdGenerated<br>555 = ColdSupply<br>556 = SteamGenerated<br>557 = SteamSupply<br>558 = CompressedAirGenerated<br>559 = CompressedAirSupply<br>560 = CO2_Industrial<br>561 = Nitrogen_Industrial<br>
+    </p></td>
+    <td><p>Indicates the type of resource that is measured (Medium in the Advantage Navigator web front-end). </p></td>
+</tr>
+<tr>
+    <td><p>6</p></td>
+    <td><p>unit</p></td>
+    <td><p>required</p></td>
+    <td><p>Integer</p></td>
+    <td><p>
+        
+        
+        1 = %<br>3 = °C<br>4 = € / kWh<br>10 = GJ<br>11 = kd<br>12 = kg<br>13 = kg CO2<br>16 = kgCO2/kWh<br>18 = kWh<br>20 = l<br>22 = m²<br>23 = m³<br>27 = MJ<br>28 = MWh<br>29 = none<br>31 = -<br>39 = €<br>41 = GW<br>42 = GWh<br>43 = h<br>44 = kg/kWh<br>48 = kVArh<br>49 = kW<br>50 = kWh/m²<br>51 = MVArh<br>52 = MW<br>54 = rm<br>55 = Srm<br>56 = € / m²<br>57 = g<br>58 = km<br>59 = m<br>60 = ORIG<br>61 = t<br>63 = kJ<br>64 = A<br>65 = V<br>66 = kVAh<br>67 = kVAr<br>68 = kVA<br>69 = °F<br>70 = Wh<br>71 = LB<br>72 = LBhr<br>73 = Einheit<br>74 = MBTU<br>76 = Gcal<br>78 = t/h<br>79 = tons<br>80 = ppm<br>81 = € / m³<br>84 = btu<br>86 = gkg<br>87 = ft<br>88 = € / kW<br>90 = kt<br>91 = m³/m²<br>92 = MMBTU<br>93 = $/MMBTU<br>95 = kBtu/m²<br>96 = kBtu<br>103 = W/m²<br>104 = Gallon<br>105 = ft³<br>106 = CCF<br>107 = therm<br>110 = mlb<br>112 = kWh/m²a<br>113 = KLB<br>114 = kg CO2 / Person<br>115 = m³m²a<br>116 = alstat<br>117 = kGal<br>118 = Gallon/m²<br>119 = MCF<br>120 = kW/Ton<br>121 = kPa<br>122 = psi<br>123 = Hertz<br>124 = Lux<br>125 = mg/l<br>126 = µS/cm<br>127 = mV<br>130 = l/m<br>131 = gpm<br>132 = kg/h<br>133 = m³/h<br>134 = ft³/m<br>135 = in WC<br>136 = ct/kWh<br>137 = inches<br>138 = W<br>139 = m/s<br>140 = Pa<br>141 = $/Gallon<br>142 = rpm<br>143 = kg/m²<br>144 = m³/d<br>146 = l/s<br>148 = Var<br>150 = kJ/kg<br>151 = Btu/lb<br>152 = hPa<br>153 = COP<br>154 = MJ/m²<br>155 = bar<br>156 = Mbar<br>157 = kmh<br>158 = Pf<br>159 = seconds<br>160 = minute<br>161 = mm<br>162 = Pkm<br>163 = Ntkm<br>164 = c / kWh<br>165 = Rooms<br>168 = ft³/h<br>169 = btu/hr<br>171 = kW/m²<br>172 = degrees<br>173 = m³/s<br>174 = kg/s<br>175 = mph<br>176 = kBtu/hr<br>177 = MBtu/hr<br>178 = psig<br>179 = mA<br>183 = klb/h<br>185 = cfm_1000<br>187 = millibar<br>188 = Nm³ <br>189 = l/m²<br>191 = kgm²a<br>192 = kg_a<br>193 = SCF<br>196 = bbl<br>197 = $<br>198 = CHF<br>200 = CZK<br>201 = £<br>202 = RMB<br>203 = HUF<br>204 = AED<br>205 = AUD<br>206 = HRK<br>207 = RON<br>208 = SIT<br>209 = INR<br>210 = PLN<br>211 = CAD<br>212 = QAR<br>213 = OMR<br>214 = TWD<br>215 = HKD<br>216 = SGD<br>217 = KRW<br>230 = CURRENCY<br>231 = DKK<br>232 = SEK<br>233 = NOK<br>239 = CF<br>240 = Dth<br>241 = 100Gal<br>242 = SKK<br>243 = kw/(m³/s)<br>244 = RUB<br>245 = SAR<br>246 = TRY<br>247 = ZAR<br>248 = VEF<br>249 = UYU<br>250 = IDR<br>251 = NGN<br>252 = MYR<br>253 = JMD<br>254 = BRL<br>255 = JPY<br>256 = MAD<br>257 = MXN<br>258 = PHP<br>259 = TND<br>260 = Unit<br>261 = MMBTU/CF<br>262 = Short Ton<br>263 = MMBTU/Short Ton<br>264 = MMBTU/Gallon<br>265 = ft²<br>266 = kWh/ft²<br>267 = kBtu/ft²<br>268 = W/ft²<br>269 = kWh/ft²a<br>270 = Gallon/ft²<br>271 = kg/ft²<br>272 = kW/ft²<br>273 = l/ft²<br>274 = ft³/ft²<br>275 = ft³/d<br>276 = ft³/s<br>277 = Nft³<br>278 = kw/(ft³/s)<br>280 = Delta °C<br>282 = Delta °F<br>283 = THB<br>284 = PKR<br>285 = ARS<br>287 = VND<br>289 = CNY<br>290 = PEN<br>
+    </p></td>
+    <td><p>Indicates the unit the resource is measuerd in (Unit in the Advantage Navigator web front-end). </p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>displayMode</p></td>
+    <td><p>optional</p></td>
+    <td><p>Integer</p></td>
+    <td><p>1 = Meter reading (standard meter reading) <br>
+        2 = Incremental (meter measures the consumption from reading to reading and is therefore reset after each
+        reading) </p></td>
+    <td><p>Specifies how the meter reading must be interpreted. Default value: 1 </p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>startValue</p></td>
+    <td><p>optional</p></td>
+    <td><p>Float</p></td>
+    <td><p>&nbsp;</p></td>
+    <td><p>Starting value for the meter when it is created. Default value: 0.0 </p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>flownature</p></td>
+    <td><p>optional</p></td>
+    <td><p>Integer</p></td>
+    <td><p>0 = Other meter<br>
+        2 = Main meter<br>
+        4 = Sub meter<br>
+        128 = Billing meter</p></td>
+    <td><p>Type of meter (Meter Type in the Advantage Navigator web front-end). Default value: 2 </p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>bActive</p></td>
+    <td><p>optional</p></td>
+    <td><p>Boolean</p></td>
+    <td><p>0 = false<br>
+        1 = true</p></td>
+    <td><p>Indicates whether or not the meter is active. Default value: 1 </p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>readingOffset</p></td>
+    <td><p>optional</p></td>
+    <td><p>Float</p></td>
+    <td><p>&nbsp;</p></td>
+    <td><p>Specifies an offset that is added to each meter reading in order to compute the actual meter reading. Default
+        value: 0.0 </p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>readingFactor</p></td>
+    <td><p>optional</p></td>
+    <td><p>Float</p></td>
+    <td><p>&nbsp;</p></td>
+    <td><p>Specifies a factor each meter reading is multiplied with. (e.g. if meter only measures thousands of units,
+        the factor to be apllied to get to units will be 1000.0). Default value: 1.0 </p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>deltaMax</p></td>
+    <td><p>optional</p></td>
+    <td><p>Float</p></td>
+    <td><p>&nbsp;</p></td>
+    <td><p>Specifies the maximum reading value deviation permitted for the meter. Default value: None<br>Shown as "Alarm
+        level" in Advantage Navigator<br></p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>deltaMin</p></td>
+    <td><p>optional</p></td>
+    <td><p>Float</p></td>
+    <td><p>&nbsp;</p></td>
+    <td><p>Specifies the minimum reading value deviation permitted for the meter. Default value: None</p>
+
+        <p>Shown as "Warning level" in Advantage Navigator<br></p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>maxMeterValue</p></td>
+    <td><p>optional</p></td>
+    <td><p>Float</p></td>
+    <td><p>&nbsp;</p></td>
+    <td><p>Specifies the maximum reading value permitted for the meter. Default value: None</p>
+
+        <p>Shown as "Meter value max." in Advantage Navigator<br></p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>compressFunction</p></td>
+    <td><p>optional</p></td>
+    <td><p>Integer</p></td>
+    <td><p>20 = Maximum<br>
+        30 = Minimum<br>
+        40 = Average<br>
+        70 = Total<br>
+        80 = Related Maximum</p></td>
+    <td><p>Specifies the function how meter readings should be interpolated. Default value: 70</p>
+
+        <p>Note: Value is used for Report generation.</p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>compressInterval</p></td>
+    <td><p>optional</p></td>
+    <td><p>Integer</p></td>
+    <td><p>10 = 1 minute<br>
+        20 = 5 minutes<br>
+        40 = 15 minutes<br>
+        50 = 30 minutes<br>
+        60 = 60 minutes<br>
+        70 = 1 day</p></td>
+    <td><p>Specifies the time interval between the individual meter readings. Default value: 70
+    </p><br>Note: Is displayed in Advantage Navigator as 'Reading interval'.
+    </td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>manualRead</p></td>
+    <td><p>optional</p></td>
+    <td><p>Integer</p></td>
+    <td><p>0 = automatic <br>
+        1 = manual<br>
+        2 = virtual<br>
+    </p></td>
+    <td><p>Specifies how the meter reading is performed. Default value: 0</p>
+
+        <p><br></p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>supplierId</p></td>
+    <td><p>optional</p></td>
+    <td><p>String</p></td>
+    <td><p>0-30 characters</p></td>
+    <td><p>Supplier ID of the meter device manufacturer. Default value: None </p></td>
+</tr>
+<!-- <tr>
+  <td><p>&nbsp;</p></td>
+  <td><p>clientId</p></td>
+  <td><p>optional</p></td>
+  <td><p>Integer</p></td>
+  <td><p>&nbsp;</p></td>
+  <td><p>The ID of the Advantage Navigator customer. Default value: Customer ID of the Advantage Navigator Device User </p></td>
+</tr> -->
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>parentNodeId</p></td>
+    <td><p>optional</p></td>
+    <td><p>Integer</p></td>
+    <td><p>&nbsp;</p></td>
+    <td><p>The node ID under which the meter should be created. If not specified, the new meter will be created under
+        the "ImportedMeters" node in the Advantage Navigator web front-end. If the "ImportedMeters"
+        node does not yet exist, it will automatically be created. </p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>comment</p></td>
+    <td><p>optional</p></td>
+    <td><p>String</p></td>
+    <td><p>0-1024 characters </p></td>
+    <td><p>An arbitrary comment. Default value: None </p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>location</p></td>
+    <td><p>optional</p></td>
+    <td><p>String</p></td>
+    <td><p>0-40 characters </p></td>
+    <td><p>Location of the meter. Default value: None </p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>reminderInterval</p></td>
+    <td><p>optional</p></td>
+    <td><p>Integer</p></td>
+    <td><p>13 = 1 week<br>
+        15 = 1 Month<br>
+        17 = 3 Months<br>
+        21 = 2 Months</p></td>
+    <td><p>Interval in which reminders are sent. Default value: None </p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>allowNegativeValues</p></td>
+    <td><p>optional</p></td>
+    <td><p>Integer</p></td>
+    <td><p>1 = true<br>0 = false</p></td>
+    <td><p>Flags if negative values are allowed for the meter. Default value: false </p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>allowNullValues</p></td>
+    <td><p>optional</p></td>
+    <td><p>Integer</p></td>
+    <td><p>1 = true<br>0 = false</p></td>
+    <td><p>Flags if NULL or 0 values are allowed for the meter. Default value: false </p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>missingAlarms</p></td>
+    <td><p>optional</p></td>
+    <td><p>Integer</p></td>
+    <td><p>1 = true<br>0 = false</p></td>
+    <td><p>Flags if alarms are missing. Default value: false </p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>splitMethod</p></td>
+    <td><p>optional</p></td>
+    <td><p>Integer</p></td>
+    <td><p>1 = Linear<br>
+        2 = Forecast<br>
+        3 = Key<br>
+        4 = None<br>
+    </p></td>
+    <td><p>The split method defines how a value should be split across a smaller timeframe. The split method value 1
+        will divide this equally according to the chosen timeframe. The value 4 uses the value as an average and the
+        same value would be used in the case of reporting on a smaller timeframe.</p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>vendor</p></td>
+    <td><p>optional</p></td>
+    <td><p>String</p></td>
+    <td><p>0-256 characters <br>
+    </p></td>
+    <td><p>Not available in the front end</p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>account</p></td>
+    <td><p>optional</p></td>
+    <td><p>String</p></td>
+    <td><p>0-256 characters <br>
+    </p></td>
+    <td><p>Not available in the front end</p></td>
+</tr>
+<tr>
+    <td><p>&nbsp;</p></td>
+    <td><p>rateClass</p></td>
+    <td><p>optional</p></td>
+    <td><p>String</p></td>
+    <td><p>0-256 characters <br>
+    </p></td>
+    <td><p>Not available in the front end</p></td>
+</tr>
+</tbody></table>
+<p>Example:</p>
+
+<p class="code">command=METER_CREATE delimiter=; optionalColumnList=startValue,maxMeterValue,comment,manualRead<br>
+    cq_03_07_13_40_24;cq_03_07_13_40_24;01/01/1980 13:00:00;1;118;86;55;10000;Test Meter;1</p>
+</div>
+<a href="#top"><img src="Advantage%20Navigator%20Documentation%20Center-Dateien/top.gif" alt="Top of page" title="Top of page" style="float:right;" border="0"></a>
+</div>
+<div id="content"><a name="meterreading"></a>
+
+    <h2>command=METER_READING</h2>
+
+    <div class="doc">
+        <p>The METER_READING command submits meter readings to Advantage Navigator. Meter readings which already exist
+            in the Advantage Navigator system will only be overwritten when the Advantage Navigator Device User is
+            entitled to do so (can be configured in the Advantage Navigator web front-end under "User
+            administration - My Devices - Edit device - Allow to overwrite values"). Otherwise, the submitted meter
+            readings will be ignored.</p>
+
+        <p>Note: Any readings sent to Advantage Navigator for a Meter (Datasource) that does not exist or is invalid in
+            the system will simply be ignored. No error will be sent to the device log.<br></p>
+
+        <h3>Data Columns</h3>
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tbody><tr>
+                <th><p>Column</p></th>
+                <th><p>Column Name</p></th>
+                <th><p>Req./Opt.</p></th>
+                <th><p>Data Type</p></th>
+                <th><p>Data Range</p></th>
+                <th><p>Description</p></th>
+            </tr>
+            <tr>
+                <td><p>1</p></td>
+                <td><p>datasource</p></td>
+                <td><p>required</p></td>
+                <td><p>String</p></td>
+                <td><p>1-255 characters</p></td>
+                <td><p>Specifies the ID string that uniquely identifies the <em>datasource</em> of the meter. </p></td>
+            </tr>
+            <tr>
+                <td><p>2</p></td>
+                <td><p>dateTime</p></td>
+                <td><p>required</p></td>
+                <td><p>UTC Timestamp<br>
+                    'MM/DD/YYYY HH:mm:ss'</p></td>
+                <td><p>not before '01/01/1950 00:00:00'</p></td>
+                <td><p>Specifies the date and time of the meter reading (Reading Date in the Advantage Navigator web
+                    front-end). It must be given in Universal Coordinated Time (UTC).</p></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td><p>value</p></td>
+                <td><p>required</p></td>
+                <td><p>Double</p></td>
+                <td><p>&nbsp;</p></td>
+                <td><p>Specifies the value of the meter reading.</p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>qualityAttribute</p></td>
+                <td><p>optional</p></td>
+                <td><p>Integer </p></td>
+                <td><p>Bit mask: <br>
+                    1 = Good (There are no known issues with this reading)<br>
+                    2 = No value (The meter does not deliver a reading)<br>
+                    4 = Power outage (Power Outage in retrieval cycle of meter)<br>
+                    8 = Modified (Original Value was overwritten)<br>
+                    16 = Hardware fault (There is a hardware fault in the respective data retrieval cycle of the
+                    meter)<br>
+                    32 = Automatic value (This reading is an automatic reading)<br>
+                    64 = Unknown (Is an unknown error code on the data retrieval side)<br>
+                    4096 = Negative value (The consumption is a negative value)<br>
+                    8192 = Null value (For this reading 0 was retrieved)<br>
+                    16384 = Estimated (This reading is not measured but represents an estimation)</p></td>
+                <td><p>The <em>qualityAttribute</em> is a bit mask that can be obtained by applying the Boolean OR
+                    operation to respective attribute values.<br>For example, to indicate that the value is unknown and
+                    estimated, OR the values 64 and 16384, resulting in a <em>qualityAttribute</em> of 16448. Default
+                    value: 33 (Good, Automatic).</p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>description</p></td>
+                <td><p>optional</p></td>
+                <td><p>String</p></td>
+                <td><p>0-1024 characters </p></td>
+                <td><p>An arbitrary description. Default value: None. </p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>beginDate</p></td>
+                <td><p>optional</p></td>
+                <td><p>UTC Timestamp<br>
+                    'MM/DD/YYYY HH:mm:ss'</p></td>
+                <td><p>not before '01/01/1950 00:00:00'</p></td>
+                <td><p>Specifies the begin date and time of the meter reading period. It must be given in Universal
+                    Coordinated Time (UTC).</p></td>
+            </tr>
+        </tbody></table>
+        <p>Example:</p>
+
+        <p class="code">command=METER_READING delimiter=; optionalColumnList=qualityAttribute,description <br>
+            cq_03_07_13_40_24;01/02/1981 11:00:00;1;33;Test Reading_0<br>
+            cq_03_07_13_40_24;01/02/1981 11:15:00;2;33;Test Reading_1<br>
+            cq_03_07_13_40_24;01/02/1981 11:30:00;3;33;Test Reading_2<br>
+            cq_03_07_13_40_24;01/02/1981 11:45:00;4;33;Test Reading_3<br>
+            cq_03_07_13_40_24;01/02/1981 12:00:00;5;33;Test Reading_4<br>
+            cq_03_07_13_40_24;01/02/1981 12:15:00;6;33;Test Reading_5<br>
+            cq_03_07_13_40_24;01/02/1981 12:30:00;7;33;Test Reading_6<br>
+            cq_03_07_13_40_24;01/02/1981 12:45:00;8;33;Test Reading_7<br>
+            cq_03_07_13_40_24;01/02/1981 13:00:00;9;33;Test Reading_8<br>
+            cq_03_07_13_40_24;01/02/1981 13:15:00;10;33;Test Reading_9</p>
+    </div>
+    <a href="#top"><img src="Advantage%20Navigator%20Documentation%20Center-Dateien/top.gif" alt="Top of page" title="Top of page" style="float:right;" border="0"></a>
+</div>
+
+<div id="content">
+    <h2>command=METER_EXCHANGE</h2>
+    <a name="meterexchange"></a>
+
+    <div class="doc">
+        <p>The METER_EXCHANGE command allows the programmatic exchange of meters including the relevant meter
+            attributes.</p>
+
+        <h3>Data Columns</h3>
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tbody><tr>
+                <th><p>Column</p></th>
+                <th><p>Column Name</p></th>
+                <th><p>Req./Opt.</p></th>
+                <th><p>Data Type</p></th>
+                <th><p>Data Range</p></th>
+                <th><p>Description</p></th>
+            </tr>
+            <tr>
+                <td><p>1</p></td>
+                <td><p>oldDatasource</p></td>
+                <td><p>required</p></td>
+                <td><p>String</p></td>
+                <td><p>1-255 characters</p></td>
+                <td><p>The ID string of the <em>datasource</em> to be replaced.</p></td>
+            </tr>
+            <tr>
+                <td><p>2</p></td>
+                <td><p>datasource</p></td>
+                <td><p>required</p></td>
+                <td><p>String</p></td>
+                <td><p>1-255 characters</p></td>
+                <td><p>The new ID string that uniquely identifies the <em>datasource</em>. <em>datasource</em> can
+                    either be the hardware ID of an external device or an ID that identifies an external system. In
+                    general, <em>datasource</em> can be freely chosen as long as <em>datasource</em> is unique per
+                    Advantage Navigator Device User. </p></td>
+            </tr>
+            <tr>
+                <td><p>3</p></td>
+                <td><p>startDateTime</p></td>
+                <td><p>required</p></td>
+                <td><p>UTC Timestamp<br>
+                    'MM/DD/YYYY HH:mm:ss'</p></td>
+                <td><p>not before '01/01/1950 00:00:00'.</p></td>
+                <td><p>The date and time of the earliest acceptable meter reading (Valid From in the Advantage Navigator
+                    web front-end). It must be given in Universal Coordinated Time (UTC).</p></td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td><p>medium</p></td>
+                <td><p>required</p></td>
+                <td><p>Integer</p></td>
+                <td><p>
+                    
+                    1 = HeatingEnergy<br>3 = FuelOilNo2<br>4 = NGas<br>5 = DistrictHeatingEnergy<br>6 = Electricity<br>7 = ColdWater<br>9 = HotWaterVolume<br>11 = Electricity1<br>12 = Electricity2<br>13 = Electricity3<br>14 = Power<br>15 = Cooling<br>16 = DistrictHeatingVolume<br>17 = HeatingVolume<br>18 = HotWaterEnergy<br>19 = DegreeHeatingDays<br>20 = OutsideTemp<br>21 = None<br>22 = WasteWater<br>23 = WS_Strom_ET<br>24 = WS_Strom_HT<br>25 = WS_Strom_NT<br>26 = WS_Power<br>27 = Photovoltaik<br>28 = Windenergie<br>29 = WS_DistrictHeating<br>30 = Erdgas<br>31 = Fluessiggas<br>32 = Heizoel_EL<br>33 = Heizoel<br>34 = Hackschnitzel<br>35 = Brennholz<br>36 = Nachtstrom<br>37 = Solarwaerme<br>38 = Erdwaerme<br>39 = Warmwasser<br>40 = Kaltwasser<br>41 = WS_Abwasser<br>42 = WS_Brunnenwasser<br>43 = WS_Nutzwasser<br>44 = WS_ProcessCooling<br>45 = WS_RoomCooling<br>46 = Gasoline<br>47 = Super<br>48 = Super_plus<br>49 = Diesel<br>50 = Biodiesel<br>51 = WS_Blindstrom<br>52 = FuelOilNo4<br>53 = FuelOilNo6<br>54 = Coal<br>55 = RunningHours<br>56 = ElectricityNoTariff<br>57 = Heat<br>58 = Steam<br>59 = Volume<br>60 = SpringWater<br>61 = Biogas<br>62 = Temperature<br>63 = Pellets<br>64 = Amps<br>65 = ApparentElectricity<br>66 = ApparentPower<br>67 = GeneralElectricity<br>68 = Volts<br>69 = Accumulators<br>70 = Papers<br>71 = CombustibleWaste<br>72 = ConstructionWaste<br>73 = Elektroschrott<br>74 = ElectricCables<br>75 = BottlesGlass<br>76 = IronWaste<br>77 = Chemicals<br>78 = FluorescentTubes<br>79 = Paint<br>80 = Pallets<br>81 = Cardboard<br>82 = Paper<br>83 = PVCWaste<br>84 = HospitalWaste<br>85 = ElectricityForHeating<br>86 = PET<br>87 = householdwaste<br>88 = disposalwaste<br>89 = specialwaste<br>90 = SuperPlumb<br>91 = GasWeight<br>92 = GasolineKM<br>93 = SuperPlumbKM<br>94 = DieselKM<br>95 = GasWeightKM<br>96 = Logbook<br>97 = BudgetMonthly<br>98 = SteamInterval<br>99 = BioHeat<br>100 = Biooil<br>101 = Service<br>102 = Production<br>103 = Turnover<br>104 = Nights<br>105 = Benchmarking<br>106 = Persons<br>107 = BudgetBaseline<br>108 = BudgetBaselineWater<br>109 = DHDemand<br>110 = ChilledWaterInterval<br>111 = ElectricityForCooling<br>112 = airquality<br>113 = rainwater<br>114 = IntervalGas<br>115 = IntervalHeat<br>116 = temproom<br>117 = humidityrel<br>118 = humidityabs<br>119 = voc<br>120 = efficiency<br>121 = positioningsignal<br>122 = switchingsignal<br>123 = ElectricCost<br>124 = PowerFactor<br>125 = GasCost<br>126 = FixedGasPrice<br>127 = Kehricht<br>128 = Recycling<br>129 = solarradiation<br>130 = VE_Water<br>131 = eigenwasser<br>132 = processcoolingwater<br>133 = neutra<br>134 = compressed_air<br>135 = BudgetBaselineVolume<br>136 = BudgetElectricityBaseline<br>137 = BenchmarkHeat<br>138 = BenchmarkElectricity<br>139 = BenchmarkWater<br>140 = ChilledWaterCost<br>141 = ChillerPerformance<br>142 = Pressure<br>143 = Frequency<br>144 = State<br>145 = Biowaste<br>147 = Beleuchtungsstaerke<br>148 = Acidity<br>149 = Solid_Material<br>150 = Phosphorus<br>151 = Nitrogen<br>152 = Fat<br>153 = Conductivity<br>154 = wood<br>155 = tinfoil<br>156 = cofidential_waste<br>157 = fat_waste<br>158 = fodder<br>159 = biological_oxygen_demand<br>160 = chemical_oxygen_demand<br>161 = sprengwasser<br>162 = Chlorine<br>163 = pH<br>164 = demi_water<br>165 = reversed_osmosed_water<br>166 = onthard_water<br>167 = fernwaerme_konstantleiter<br>168 = fernwaerme_gleitleiter<br>169 = redoxpotential<br>171 = chlorine_ppm<br>173 = Durchfluss<br>174 = Kondensat<br>175 = Massenstrom<br>176 = Luftfluss<br>177 = Position<br>178 = speed<br>179 = production_mass<br>180 = produktion_volumen<br>181 = WasteWaterCost<br>182 = WaterCost<br>183 = FuelOilCost<br>184 = SteamCost<br>185 = workplace<br>187 = Woodwaste<br>188 = Bio_oilwaste<br>189 = Airflow_min<br>190 = Airflow_stpt<br>191 = Airflow_Exhaust<br>192 = Airflow_Base<br>193 = Airflow_Supply<br>194 = Airflow_SupplyTot<br>195 = Temperature_Setpt<br>196 = Airflow_ExhaustTot<br>197 = Airflow_HoodSetpoint<br>198 = Airflow_HoodMin<br>199 = Airflow_MinUnocc<br>200 = DegreeCoolingDays<br>201 = Airflow_HoodExhaust<br>202 = Humidity_Actual<br>203 = Temperature_Actual<br>204 = Sash_Position<br>205 = Occupation_Status<br>206 = Valve_Position<br>207 = Humidity_Setpt<br>208 = coalcost<br>209 = lpg_cost<br>210 = butangas<br>211 = aufbereitetes_wasser<br>212 = enthaertetes_wasser<br>213 = tap_water<br>214 = distilled_water<br>215 = revolutions<br>216 = VentilationAlarm<br>217 = VolumeDiffAlarm<br>218 = BenchmChillPerf<br>219 = BenchmarkPower<br>220 = Bio2Waste<br>221 = HazardousWaste<br>222 = PlasticWaste<br>223 = Sludge<br>224 = Manure<br>225 = spuelwasser<br>226 = BenchmarkCooling<br>227 = Z1_Solarertrag<br>228 = Z2_Raumwaerme<br>229 = Z3_RLTemperatur<br>230 = Z4_StromAllg<br>231 = Z5_StromHeiz<br>232 = Z6_StromBWW<br>233 = Z7_HeizenGas<br>234 = Z7_HeizenOel<br>235 = Z7_HeizenPellets<br>236 = Z7_HeizenHackgut<br>237 = Z7_HeizenWaerme<br>238 = Z8_StromLueftung<br>239 = Z9_HeizenWaerme<br>240 = Z10_BWWMenge<br>241 = Z11_BWWEnergie<br>242 = Enthalpy<br>243 = BillElectricity<br>244 = hk_clp_lpt<br>245 = hk_clp_gst<br>247 = BudgetWasteBaseline<br>252 = BudgetOilBaseline<br>253 = Reactive_Power<br>254 = specific_enthalpy<br>255 = km_elektrizitat<br>256 = BaseOpHours<br>257 = RaceMeetings<br>258 = carbon_emission<br>259 = carbon_vehicles<br>260 = elctricity_mobility<br>261 = speed2<br>262 = BaselineEnergy<br>263 = PredictedEnergy<br>264 = hk_clp_bt<br>265 = ChillerPerformanceCOP<br>266 = food_waste<br>267 = hk_hek_cim<br>268 = hk_hek_md<br>269 = vzSavings<br>270 = vzAccounts<br>271 = vzEndexScores<br>272 = press_diff<br>273 = press_diff_alarm<br>274 = pvPercentage<br>275 = waterHarvestined<br>276 = mmRain<br>277 = Gleisaushub<br>278 = Personenkilometer<br>279 = Nettotonnenkilometer<br>280 = Anzahl_Reklamationen<br>281 = Ern_Energie_Bahnstrom<br>282 = Umweltimage<br>283 = Occupation<br>284 = ertragsol_m2<br>285 = Ertragpv_m2<br>286 = AmpsPercent<br>287 = LoadPercent<br>288 = UnitOccupied<br>289 = MixedAirTemp<br>290 = MixedAirTempSet<br>292 = ReturnAirTemp<br>293 = DischarcheAirTemp<br>294 = DischargeAirTempSet<br>295 = HeatingValvePct<br>296 = CoolingValvePct<br>297 = UnitSupply<br>298 = MixedAirDamperPct<br>299 = SupplyFanStatus<br>300 = preheatAirTemp<br>301 = EndDuctStaticPress<br>302 = DischargeStaticPressUnit<br>303 = DischargeStaticPressSet<br>304 = OutdoorAirDampPct<br>305 = OutdoorAirFlow<br>306 = ReturnAirFlow<br>307 = SupplyAirFlow<br>308 = FaceBypassPct<br>309 = ReturnAirHumidity<br>310 = RoomHumidity<br>311 = SupplyFanVFD<br>312 = ReturnFanVFD<br>313 = PreheatAirSetpoint<br>314 = gasflow<br>315 = HeatBalance<br>316 = pa_savings<br>317 = LightingPowerBudget<br>318 = Solar_Radiation_Direct<br>319 = Solar_Radiation_Diffuse<br>320 = Solar_Radiation_Direct_Diffuse<br>321 = azimuth<br>322 = TOC<br>323 = Condensate<br>325 = TemperatureSupplyActual<br>326 = TemperatureSupplySetpt<br>327 = TemperatureReturnSetpt<br>328 = HumidityReturnActual<br>329 = HumidityReturnSetpoint<br>330 = SupplyStaticPressAct<br>331 = SupplyStaticPressSet<br>332 = AirqualityCO2<br>333 = AirqualityCO2setpoint<br>334 = chiller_status<br>335 = chiller_out_air_temp_set<br>336 = CO2_Setpoint<br>337 = chilled_water_supply_temp<br>338 = chilled_water_return_temp<br>339 = hot_water_supply_temp<br>340 = hot_water_return_temp<br>341 = chilled_water_inlet_temp<br>342 = chilled_water_outlet_temp<br>343 = chilled_water_outlet_temp_set<br>344 = hot_water_inlet_temp<br>345 = hot_water_outlet_temp<br>346 = hot_water_outlet_temp_set<br>347 = valve_control<br>348 = damper_control<br>349 = control_signal_MV<br>350 = control_signal_ma<br>351 = heat_recovery_valve_percent<br>352 = heat_recovery_temp<br>353 = outside_air_humidity<br>354 = outside_air_humidity_enthalpy<br>355 = return_air_humidity_setpoint<br>356 = return_air_humidity_enthalpy<br>357 = return_air_temp_setpoint<br>358 = return_fan_status<br>359 = condenser_water_supply_temp<br>361 = condense_water_sup_temp_set<br>362 = condens_water_return_temp<br>363 = exhaust_fan_status<br>364 = warmup_mode<br>365 = night_override_mode<br>366 = night_heating_mode<br>367 = BudgetActual<br>368 = valve_control_v<br>369 = valve_control_ma<br>370 = valve_control_perc<br>371 = sup_air_humidity_set<br>372 = supply_air_humidity<br>373 = suuply_air_flow_setpoint<br>374 = suction_static_pres_set<br>375 = speed_v<br>376 = speed_ma<br>377 = pressure_set<br>378 = hw_out_air_enab_temp_set<br>379 = humidifier_status<br>380 = hw_sup_temp_set<br>381 = fan_control<br>382 = exhaust_temp<br>383 = exhaust_stat_pres_set<br>384 = exhaust_air_hum_set<br>385 = exhaust_air_humidity<br>386 = exhaust_air_flow_set<br>387 = exhaust_air_flow<br>388 = district_cooling_energy<br>389 = damper_perc<br>390 = control_signal_perc<br>391 = chil_water_ret_temp_set<br>392 = Rainfall<br>393 = suction_stat_pres_unit<br>394 = relative_humidity_setpoint<br>395 = chill_water_supp_temp_set<br>396 = budgetBaselineDemand<br>397 = room_static_pressure<br>398 = room_static_pressure_setpoint<br>399 = vav_box_air_volume<br>400 = vav_box_control_max_air_flow<br>401 = vav_box_controller_setpoint<br>402 = vav_box_day_cooling_setpoint<br>403 = vav_box_day_heating_setpoint<br>404 = vav_box_damper_command<br>405 = vav_box_air_flow_setpoint<br>406 = vav_box_heat_cool_mode<br>407 = vav_box_room_temperature<br>408 = vav_box_reheat_valve_command<br>409 = AHU_Evaluate_Trigger<br>410 = Area_Evaluation_Trigger<br>411 = WasteDangerous<br>412 = WasteNotDangerous<br>413 = WasteEliminate<br>414 = WasteRecyclable<br>415 = crudeOil<br>416 = Argon<br>417 = ArgonCost<br>418 = BiodieselCost<br>419 = BlackLiqourCost<br>420 = BlackLiqour<br>421 = CarbonMonoxideCost<br>422 = CarbonMonoxide<br>423 = CarbonDioxideCost<br>424 = CarbonDioxide<br>425 = CokeBreezeCost<br>426 = CokeBreeze<br>427 = CompostCost<br>428 = Compost<br>429 = DieselCost<br>430 = ElectricitySupplyCost<br>431 = ElectricitySupply<br>432 = ElectricityOnPeakCost<br>433 = ElectricityOffPeakCost<br>434 = ElectricityMidPeakCost<br>435 = ElectricityMidPeak<br>436 = FuelOilNo2Cost<br>437 = FuelOilNo3<br>438 = FuelOilNo3Cost<br>439 = FuelOilNo4Cost<br>440 = FuelOilNo5<br>441 = FuelOilNo6Cost<br>442 = FuelOilNo5Cost<br>443 = GasolineCost<br>444 = HeliumCost<br>445 = Helium<br>446 = HydrogenCost<br>447 = Hydrogen<br>448 = KeroseneCost<br>449 = Kerosene<br>450 = LiquidNaturalGasCost<br>451 = LiquidNaturalGas<br>452 = NaturalGasSupplyCost<br>453 = NaturalGasSupply<br>454 = NaturalGasPipelineCost<br>455 = NaturalGasPipeline<br>456 = NitrogenCost<br>457 = OxygenCost<br>458 = Oxygen<br>459 = PetCokeCost<br>460 = PetCoke<br>461 = PropaneCost<br>462 = Propane<br>463 = RecyclingCost<br>464 = RecycledOilCost<br>465 = RecycledOil<br>466 = SludgeCost<br>467 = StormwaterCost<br>468 = TelecomCost<br>469 = Telecom<br>470 = TrashCost<br>471 = ElectricitySingleRateHedge<br>482 = Budget_Weather_Ind<br>484 = ElectricityOffPeakHedge<br>485 = NaturalGasHedge<br>486 = FuelOilNo2Hedge<br>487 = FuelOilNo6Hedge<br>488 = CoalHedge<br>489 = CrudeOilHedge<br>490 = hackschnitzel_gewicht<br>491 = BudgetSavings<br>492 = Pellets_Gewicht<br>493 = SpecificFanPower<br>494 = OperationalCosts<br>495 = SteamProcess<br>496 = GasDemand<br>497 = GroundWater<br>498 = SurfaceWater<br>499 = GreyWater<br>500 = GasSubsidies<br>501 = ElectricitySubsidies<br>502 = BiodieselMobile<br>503 = DieselMobile<br>504 = GasolineMobile<br>505 = EthanolMobile<br>506 = CNGMobile<br>507 = JetFuelMobile<br>508 = LPG<br>509 = brownWater<br>510 = stormWater<br>511 = sewage<br>512 = wasteWaterPOTW<br>513 = nonHazWasteWater<br>514 = nonHazWaszeWaterWWTP<br>515 = surfaceWaterDischarge<br>516 = groundWaterDischarge<br>517 = hazWasteWater<br>518 = hazWasteWaterRecycle<br>519 = hazWasteWaterWWTP<br>520 = hazWasteWaterTreatOff<br>521 = hazWasteWaterTreatOn<br>522 = nonHazardousWaste<br>523 = SteamHeating<br>524 = alcoholBottoms<br>525 = crudePalmOil<br>526 = paperFines<br>527 = geoThermal<br>528 = aviationGasoline<br>529 = codSurfaceWaterDischarge<br>530 = codSewerPOTWDischarge<br>531 = codOffsiteWWTP<br>532 = codGroundDischarge<br>533 = particulates<br>534 = ElectricityHotWater<br>535 = Tonne_Sales<br>536 = Standard_Hour<br>537 = Other_Water<br>538 = Medium<br>539 = ElectricityGeneratedCHP<br>540 = ElectricityGeneratedPV<br>541 = ElectricityGeneratedReg<br>542 = ElectricityGeneratedEmergency<br>543 = ElectricitySupplyCHP<br>544 = ElectricitysupplyPV<br>545 = ElectricitySupplyRegener<br>546 = ElectricitySupplyEmergency<br>547 = HeatGeneratedCHP<br>548 = HeatGeneratedConventional<br>549 = HeatGeneratedBiomass<br>550 = HeatGeneratedHeatpump<br>551 = HeatGeneratedSolar<br>552 = HeatSupplyCHP<br>553 = HeatSupply<br>554 = ColdGenerated<br>555 = ColdSupply<br>556 = SteamGenerated<br>557 = SteamSupply<br>558 = CompressedAirGenerated<br>559 = CompressedAirSupply<br>560 = CO2_Industrial<br>561 = Nitrogen_Industrial<br>1 = HeatingEnergy<br>3 = FuelOilNo2<br>4 = NGas<br>5 = DistrictHeatingEnergy<br>6 = Electricity<br>7 = ColdWater<br>9 = HotWaterVolume<br>11 = Electricity1<br>12 = Electricity2<br>13 = Electricity3<br>14 = Power<br>15 = Cooling<br>16 = DistrictHeatingVolume<br>17 = HeatingVolume<br>18 = HotWaterEnergy<br>19 = DegreeHeatingDays<br>20 = OutsideTemp<br>21 = None<br>22 = WasteWater<br>23 = WS_Strom_ET<br>24 = WS_Strom_HT<br>25 = WS_Strom_NT<br>26 = WS_Power<br>27 = Photovoltaik<br>28 = Windenergie<br>29 = WS_DistrictHeating<br>30 = Erdgas<br>31 = Fluessiggas<br>32 = Heizoel_EL<br>33 = Heizoel<br>34 = Hackschnitzel<br>35 = Brennholz<br>36 = Nachtstrom<br>37 = Solarwaerme<br>38 = Erdwaerme<br>39 = Warmwasser<br>40 = Kaltwasser<br>41 = WS_Abwasser<br>42 = WS_Brunnenwasser<br>43 = WS_Nutzwasser<br>44 = WS_ProcessCooling<br>45 = WS_RoomCooling<br>46 = Gasoline<br>47 = Super<br>48 = Super_plus<br>49 = Diesel<br>50 = Biodiesel<br>51 = WS_Blindstrom<br>52 = FuelOilNo4<br>53 = FuelOilNo6<br>54 = Coal<br>55 = RunningHours<br>56 = ElectricityNoTariff<br>57 = Heat<br>58 = Steam<br>59 = Volume<br>60 = SpringWater<br>61 = Biogas<br>62 = Temperature<br>63 = Pellets<br>64 = Amps<br>65 = ApparentElectricity<br>66 = ApparentPower<br>67 = GeneralElectricity<br>68 = Volts<br>69 = Accumulators<br>70 = Papers<br>71 = CombustibleWaste<br>72 = ConstructionWaste<br>73 = Elektroschrott<br>74 = ElectricCables<br>75 = BottlesGlass<br>76 = IronWaste<br>77 = Chemicals<br>78 = FluorescentTubes<br>79 = Paint<br>80 = Pallets<br>81 = Cardboard<br>82 = Paper<br>83 = PVCWaste<br>84 = HospitalWaste<br>85 = ElectricityForHeating<br>86 = PET<br>87 = householdwaste<br>88 = disposalwaste<br>89 = specialwaste<br>90 = SuperPlumb<br>91 = GasWeight<br>92 = GasolineKM<br>93 = SuperPlumbKM<br>94 = DieselKM<br>95 = GasWeightKM<br>96 = Logbook<br>97 = BudgetMonthly<br>98 = SteamInterval<br>99 = BioHeat<br>100 = Biooil<br>101 = Service<br>102 = Production<br>103 = Turnover<br>104 = Nights<br>105 = Benchmarking<br>106 = Persons<br>107 = BudgetBaseline<br>108 = BudgetBaselineWater<br>109 = DHDemand<br>110 = ChilledWaterInterval<br>111 = ElectricityForCooling<br>112 = airquality<br>113 = rainwater<br>114 = IntervalGas<br>115 = IntervalHeat<br>116 = temproom<br>117 = humidityrel<br>118 = humidityabs<br>119 = voc<br>120 = efficiency<br>121 = positioningsignal<br>122 = switchingsignal<br>123 = ElectricCost<br>124 = PowerFactor<br>125 = GasCost<br>126 = FixedGasPrice<br>127 = Kehricht<br>128 = Recycling<br>129 = solarradiation<br>130 = VE_Water<br>131 = eigenwasser<br>132 = processcoolingwater<br>133 = neutra<br>134 = compressed_air<br>135 = BudgetBaselineVolume<br>136 = BudgetElectricityBaseline<br>137 = BenchmarkHeat<br>138 = BenchmarkElectricity<br>139 = BenchmarkWater<br>140 = ChilledWaterCost<br>141 = ChillerPerformance<br>142 = Pressure<br>143 = Frequency<br>144 = State<br>145 = Biowaste<br>147 = Beleuchtungsstaerke<br>148 = Acidity<br>149 = Solid_Material<br>150 = Phosphorus<br>151 = Nitrogen<br>152 = Fat<br>153 = Conductivity<br>154 = wood<br>155 = tinfoil<br>156 = cofidential_waste<br>157 = fat_waste<br>158 = fodder<br>159 = biological_oxygen_demand<br>160 = chemical_oxygen_demand<br>161 = sprengwasser<br>162 = Chlorine<br>163 = pH<br>164 = demi_water<br>165 = reversed_osmosed_water<br>166 = onthard_water<br>167 = fernwaerme_konstantleiter<br>168 = fernwaerme_gleitleiter<br>169 = redoxpotential<br>171 = chlorine_ppm<br>173 = Durchfluss<br>174 = Kondensat<br>175 = Massenstrom<br>176 = Luftfluss<br>177 = Position<br>178 = speed<br>179 = production_mass<br>180 = produktion_volumen<br>181 = WasteWaterCost<br>182 = WaterCost<br>183 = FuelOilCost<br>184 = SteamCost<br>185 = workplace<br>187 = Woodwaste<br>188 = Bio_oilwaste<br>189 = Airflow_min<br>190 = Airflow_stpt<br>191 = Airflow_Exhaust<br>192 = Airflow_Base<br>193 = Airflow_Supply<br>194 = Airflow_SupplyTot<br>195 = Temperature_Setpt<br>196 = Airflow_ExhaustTot<br>197 = Airflow_HoodSetpoint<br>198 = Airflow_HoodMin<br>199 = Airflow_MinUnocc<br>200 = DegreeCoolingDays<br>201 = Airflow_HoodExhaust<br>202 = Humidity_Actual<br>203 = Temperature_Actual<br>204 = Sash_Position<br>205 = Occupation_Status<br>206 = Valve_Position<br>207 = Humidity_Setpt<br>208 = coalcost<br>209 = lpg_cost<br>210 = butangas<br>211 = aufbereitetes_wasser<br>212 = enthaertetes_wasser<br>213 = tap_water<br>214 = distilled_water<br>215 = revolutions<br>216 = VentilationAlarm<br>217 = VolumeDiffAlarm<br>218 = BenchmChillPerf<br>219 = BenchmarkPower<br>220 = Bio2Waste<br>221 = HazardousWaste<br>222 = PlasticWaste<br>223 = Sludge<br>224 = Manure<br>225 = spuelwasser<br>226 = BenchmarkCooling<br>227 = Z1_Solarertrag<br>228 = Z2_Raumwaerme<br>229 = Z3_RLTemperatur<br>230 = Z4_StromAllg<br>231 = Z5_StromHeiz<br>232 = Z6_StromBWW<br>233 = Z7_HeizenGas<br>234 = Z7_HeizenOel<br>235 = Z7_HeizenPellets<br>236 = Z7_HeizenHackgut<br>237 = Z7_HeizenWaerme<br>238 = Z8_StromLueftung<br>239 = Z9_HeizenWaerme<br>240 = Z10_BWWMenge<br>241 = Z11_BWWEnergie<br>242 = Enthalpy<br>243 = BillElectricity<br>244 = hk_clp_lpt<br>245 = hk_clp_gst<br>247 = BudgetWasteBaseline<br>252 = BudgetOilBaseline<br>253 = Reactive_Power<br>254 = specific_enthalpy<br>255 = km_elektrizitat<br>256 = BaseOpHours<br>257 = RaceMeetings<br>258 = carbon_emission<br>259 = carbon_vehicles<br>260 = elctricity_mobility<br>261 = speed2<br>262 = BaselineEnergy<br>263 = PredictedEnergy<br>264 = hk_clp_bt<br>265 = ChillerPerformanceCOP<br>266 = food_waste<br>267 = hk_hek_cim<br>268 = hk_hek_md<br>269 = vzSavings<br>270 = vzAccounts<br>271 = vzEndexScores<br>272 = press_diff<br>273 = press_diff_alarm<br>274 = pvPercentage<br>275 = waterHarvestined<br>276 = mmRain<br>277 = Gleisaushub<br>278 = Personenkilometer<br>279 = Nettotonnenkilometer<br>280 = Anzahl_Reklamationen<br>281 = Ern_Energie_Bahnstrom<br>282 = Umweltimage<br>283 = Occupation<br>284 = ertragsol_m2<br>285 = Ertragpv_m2<br>286 = AmpsPercent<br>287 = LoadPercent<br>288 = UnitOccupied<br>289 = MixedAirTemp<br>290 = MixedAirTempSet<br>292 = ReturnAirTemp<br>293 = DischarcheAirTemp<br>294 = DischargeAirTempSet<br>295 = HeatingValvePct<br>296 = CoolingValvePct<br>297 = UnitSupply<br>298 = MixedAirDamperPct<br>299 = SupplyFanStatus<br>300 = preheatAirTemp<br>301 = EndDuctStaticPress<br>302 = DischargeStaticPressUnit<br>303 = DischargeStaticPressSet<br>304 = OutdoorAirDampPct<br>305 = OutdoorAirFlow<br>306 = ReturnAirFlow<br>307 = SupplyAirFlow<br>308 = FaceBypassPct<br>309 = ReturnAirHumidity<br>310 = RoomHumidity<br>311 = SupplyFanVFD<br>312 = ReturnFanVFD<br>313 = PreheatAirSetpoint<br>314 = gasflow<br>315 = HeatBalance<br>316 = pa_savings<br>317 = LightingPowerBudget<br>318 = Solar_Radiation_Direct<br>319 = Solar_Radiation_Diffuse<br>320 = Solar_Radiation_Direct_Diffuse<br>321 = azimuth<br>322 = TOC<br>323 = Condensate<br>325 = TemperatureSupplyActual<br>326 = TemperatureSupplySetpt<br>327 = TemperatureReturnSetpt<br>328 = HumidityReturnActual<br>329 = HumidityReturnSetpoint<br>330 = SupplyStaticPressAct<br>331 = SupplyStaticPressSet<br>332 = AirqualityCO2<br>333 = AirqualityCO2setpoint<br>334 = chiller_status<br>335 = chiller_out_air_temp_set<br>336 = CO2_Setpoint<br>337 = chilled_water_supply_temp<br>338 = chilled_water_return_temp<br>339 = hot_water_supply_temp<br>340 = hot_water_return_temp<br>341 = chilled_water_inlet_temp<br>342 = chilled_water_outlet_temp<br>343 = chilled_water_outlet_temp_set<br>344 = hot_water_inlet_temp<br>345 = hot_water_outlet_temp<br>346 = hot_water_outlet_temp_set<br>347 = valve_control<br>348 = damper_control<br>349 = control_signal_MV<br>350 = control_signal_ma<br>351 = heat_recovery_valve_percent<br>352 = heat_recovery_temp<br>353 = outside_air_humidity<br>354 = outside_air_humidity_enthalpy<br>355 = return_air_humidity_setpoint<br>356 = return_air_humidity_enthalpy<br>357 = return_air_temp_setpoint<br>358 = return_fan_status<br>359 = condenser_water_supply_temp<br>361 = condense_water_sup_temp_set<br>362 = condens_water_return_temp<br>363 = exhaust_fan_status<br>364 = warmup_mode<br>365 = night_override_mode<br>366 = night_heating_mode<br>367 = BudgetActual<br>368 = valve_control_v<br>369 = valve_control_ma<br>370 = valve_control_perc<br>371 = sup_air_humidity_set<br>372 = supply_air_humidity<br>373 = suuply_air_flow_setpoint<br>374 = suction_static_pres_set<br>375 = speed_v<br>376 = speed_ma<br>377 = pressure_set<br>378 = hw_out_air_enab_temp_set<br>379 = humidifier_status<br>380 = hw_sup_temp_set<br>381 = fan_control<br>382 = exhaust_temp<br>383 = exhaust_stat_pres_set<br>384 = exhaust_air_hum_set<br>385 = exhaust_air_humidity<br>386 = exhaust_air_flow_set<br>387 = exhaust_air_flow<br>388 = district_cooling_energy<br>389 = damper_perc<br>390 = control_signal_perc<br>391 = chil_water_ret_temp_set<br>392 = Rainfall<br>393 = suction_stat_pres_unit<br>394 = relative_humidity_setpoint<br>395 = chill_water_supp_temp_set<br>396 = budgetBaselineDemand<br>397 = room_static_pressure<br>398 = room_static_pressure_setpoint<br>399 = vav_box_air_volume<br>400 = vav_box_control_max_air_flow<br>401 = vav_box_controller_setpoint<br>402 = vav_box_day_cooling_setpoint<br>403 = vav_box_day_heating_setpoint<br>404 = vav_box_damper_command<br>405 = vav_box_air_flow_setpoint<br>406 = vav_box_heat_cool_mode<br>407 = vav_box_room_temperature<br>408 = vav_box_reheat_valve_command<br>409 = AHU_Evaluate_Trigger<br>410 = Area_Evaluation_Trigger<br>411 = WasteDangerous<br>412 = WasteNotDangerous<br>413 = WasteEliminate<br>414 = WasteRecyclable<br>415 = crudeOil<br>416 = Argon<br>417 = ArgonCost<br>418 = BiodieselCost<br>419 = BlackLiqourCost<br>420 = BlackLiqour<br>421 = CarbonMonoxideCost<br>422 = CarbonMonoxide<br>423 = CarbonDioxideCost<br>424 = CarbonDioxide<br>425 = CokeBreezeCost<br>426 = CokeBreeze<br>427 = CompostCost<br>428 = Compost<br>429 = DieselCost<br>430 = ElectricitySupplyCost<br>431 = ElectricitySupply<br>432 = ElectricityOnPeakCost<br>433 = ElectricityOffPeakCost<br>434 = ElectricityMidPeakCost<br>435 = ElectricityMidPeak<br>436 = FuelOilNo2Cost<br>437 = FuelOilNo3<br>438 = FuelOilNo3Cost<br>439 = FuelOilNo4Cost<br>440 = FuelOilNo5<br>441 = FuelOilNo6Cost<br>442 = FuelOilNo5Cost<br>443 = GasolineCost<br>444 = HeliumCost<br>445 = Helium<br>446 = HydrogenCost<br>447 = Hydrogen<br>448 = KeroseneCost<br>449 = Kerosene<br>450 = LiquidNaturalGasCost<br>451 = LiquidNaturalGas<br>452 = NaturalGasSupplyCost<br>453 = NaturalGasSupply<br>454 = NaturalGasPipelineCost<br>455 = NaturalGasPipeline<br>456 = NitrogenCost<br>457 = OxygenCost<br>458 = Oxygen<br>459 = PetCokeCost<br>460 = PetCoke<br>461 = PropaneCost<br>462 = Propane<br>463 = RecyclingCost<br>464 = RecycledOilCost<br>465 = RecycledOil<br>466 = SludgeCost<br>467 = StormwaterCost<br>468 = TelecomCost<br>469 = Telecom<br>470 = TrashCost<br>471 = ElectricitySingleRateHedge<br>482 = Budget_Weather_Ind<br>484 = ElectricityOffPeakHedge<br>485 = NaturalGasHedge<br>486 = FuelOilNo2Hedge<br>487 = FuelOilNo6Hedge<br>488 = CoalHedge<br>489 = CrudeOilHedge<br>490 = hackschnitzel_gewicht<br>491 = BudgetSavings<br>492 = Pellets_Gewicht<br>493 = SpecificFanPower<br>494 = OperationalCosts<br>495 = SteamProcess<br>496 = GasDemand<br>497 = GroundWater<br>498 = SurfaceWater<br>499 = GreyWater<br>500 = GasSubsidies<br>501 = ElectricitySubsidies<br>502 = BiodieselMobile<br>503 = DieselMobile<br>504 = GasolineMobile<br>505 = EthanolMobile<br>506 = CNGMobile<br>507 = JetFuelMobile<br>508 = LPG<br>509 = brownWater<br>510 = stormWater<br>511 = sewage<br>512 = wasteWaterPOTW<br>513 = nonHazWasteWater<br>514 = nonHazWaszeWaterWWTP<br>515 = surfaceWaterDischarge<br>516 = groundWaterDischarge<br>517 = hazWasteWater<br>518 = hazWasteWaterRecycle<br>519 = hazWasteWaterWWTP<br>520 = hazWasteWaterTreatOff<br>521 = hazWasteWaterTreatOn<br>522 = nonHazardousWaste<br>523 = SteamHeating<br>524 = alcoholBottoms<br>525 = crudePalmOil<br>526 = paperFines<br>527 = geoThermal<br>528 = aviationGasoline<br>529 = codSurfaceWaterDischarge<br>530 = codSewerPOTWDischarge<br>531 = codOffsiteWWTP<br>532 = codGroundDischarge<br>533 = particulates<br>534 = ElectricityHotWater<br>535 = Tonne_Sales<br>536 = Standard_Hour<br>537 = Other_Water<br>538 = Medium<br>539 = ElectricityGeneratedCHP<br>540 = ElectricityGeneratedPV<br>541 = ElectricityGeneratedReg<br>542 = ElectricityGeneratedEmergency<br>543 = ElectricitySupplyCHP<br>544 = ElectricitysupplyPV<br>545 = ElectricitySupplyRegener<br>546 = ElectricitySupplyEmergency<br>547 = HeatGeneratedCHP<br>548 = HeatGeneratedConventional<br>549 = HeatGeneratedBiomass<br>550 = HeatGeneratedHeatpump<br>551 = HeatGeneratedSolar<br>552 = HeatSupplyCHP<br>553 = HeatSupply<br>554 = ColdGenerated<br>555 = ColdSupply<br>556 = SteamGenerated<br>557 = SteamSupply<br>558 = CompressedAirGenerated<br>559 = CompressedAirSupply<br>560 = CO2_Industrial<br>561 = Nitrogen_Industrial<br>
+                </p></td>
+                <td><p>Indicates the type of resource that is measured (Medium in the Advantage Navigator web
+                    front-end). </p></td>
+            </tr>
+            <tr>
+                <td><p>5</p></td>
+                <td><p>unit</p></td>
+                <td><p>required</p></td>
+                <td><p>Integer</p></td>
+                <td><p>
+                    
+                    1 = %<br>3 = °C<br>4 = € / kWh<br>10 = GJ<br>11 = kd<br>12 = kg<br>13 = kg CO2<br>16 = kgCO2/kWh<br>18 = kWh<br>20 = l<br>22 = m²<br>23 = m³<br>27 = MJ<br>28 = MWh<br>29 = none<br>31 = -<br>39 = €<br>41 = GW<br>42 = GWh<br>43 = h<br>44 = kg/kWh<br>48 = kVArh<br>49 = kW<br>50 = kWh/m²<br>51 = MVArh<br>52 = MW<br>54 = rm<br>55 = Srm<br>56 = € / m²<br>57 = g<br>58 = km<br>59 = m<br>60 = ORIG<br>61 = t<br>63 = kJ<br>64 = A<br>65 = V<br>66 = kVAh<br>67 = kVAr<br>68 = kVA<br>69 = °F<br>70 = Wh<br>71 = LB<br>72 = LBhr<br>73 = Einheit<br>74 = MBTU<br>76 = Gcal<br>78 = t/h<br>79 = tons<br>80 = ppm<br>81 = € / m³<br>84 = btu<br>86 = gkg<br>87 = ft<br>88 = € / kW<br>90 = kt<br>91 = m³/m²<br>92 = MMBTU<br>93 = $/MMBTU<br>95 = kBtu/m²<br>96 = kBtu<br>103 = W/m²<br>104 = Gallon<br>105 = ft³<br>106 = CCF<br>107 = therm<br>110 = mlb<br>112 = kWh/m²a<br>113 = KLB<br>114 = kg CO2 / Person<br>115 = m³m²a<br>116 = alstat<br>117 = kGal<br>118 = Gallon/m²<br>119 = MCF<br>120 = kW/Ton<br>121 = kPa<br>122 = psi<br>123 = Hertz<br>124 = Lux<br>125 = mg/l<br>126 = µS/cm<br>127 = mV<br>130 = l/m<br>131 = gpm<br>132 = kg/h<br>133 = m³/h<br>134 = ft³/m<br>135 = in WC<br>136 = ct/kWh<br>137 = inches<br>138 = W<br>139 = m/s<br>140 = Pa<br>141 = $/Gallon<br>142 = rpm<br>143 = kg/m²<br>144 = m³/d<br>146 = l/s<br>148 = Var<br>150 = kJ/kg<br>151 = Btu/lb<br>152 = hPa<br>153 = COP<br>154 = MJ/m²<br>155 = bar<br>156 = Mbar<br>157 = kmh<br>158 = Pf<br>159 = seconds<br>160 = minute<br>161 = mm<br>162 = Pkm<br>163 = Ntkm<br>164 = c / kWh<br>165 = Rooms<br>168 = ft³/h<br>169 = btu/hr<br>171 = kW/m²<br>172 = degrees<br>173 = m³/s<br>174 = kg/s<br>175 = mph<br>176 = kBtu/hr<br>177 = MBtu/hr<br>178 = psig<br>179 = mA<br>183 = klb/h<br>185 = cfm_1000<br>187 = millibar<br>188 = Nm³ <br>189 = l/m²<br>191 = kgm²a<br>192 = kg_a<br>193 = SCF<br>196 = bbl<br>197 = $<br>198 = CHF<br>200 = CZK<br>201 = £<br>202 = RMB<br>203 = HUF<br>204 = AED<br>205 = AUD<br>206 = HRK<br>207 = RON<br>208 = SIT<br>209 = INR<br>210 = PLN<br>211 = CAD<br>212 = QAR<br>213 = OMR<br>214 = TWD<br>215 = HKD<br>216 = SGD<br>217 = KRW<br>230 = CURRENCY<br>231 = DKK<br>232 = SEK<br>233 = NOK<br>239 = CF<br>240 = Dth<br>241 = 100Gal<br>242 = SKK<br>243 = kw/(m³/s)<br>244 = RUB<br>245 = SAR<br>246 = TRY<br>247 = ZAR<br>248 = VEF<br>249 = UYU<br>250 = IDR<br>251 = NGN<br>252 = MYR<br>253 = JMD<br>254 = BRL<br>255 = JPY<br>256 = MAD<br>257 = MXN<br>258 = PHP<br>259 = TND<br>260 = Unit<br>261 = MMBTU/CF<br>262 = Short Ton<br>263 = MMBTU/Short Ton<br>264 = MMBTU/Gallon<br>265 = ft²<br>266 = kWh/ft²<br>267 = kBtu/ft²<br>268 = W/ft²<br>269 = kWh/ft²a<br>270 = Gallon/ft²<br>271 = kg/ft²<br>272 = kW/ft²<br>273 = l/ft²<br>274 = ft³/ft²<br>275 = ft³/d<br>276 = ft³/s<br>277 = Nft³<br>278 = kw/(ft³/s)<br>280 = Delta °C<br>282 = Delta °F<br>283 = THB<br>284 = PKR<br>285 = ARS<br>287 = VND<br>289 = CNY<br>290 = PEN<br>1 = %<br>3 = °C<br>4 = € / kWh<br>10 = GJ<br>11 = kd<br>12 = kg<br>13 = kg CO2<br>16 = kgCO2/kWh<br>18 = kWh<br>20 = l<br>22 = m²<br>23 = m³<br>27 = MJ<br>28 = MWh<br>29 = none<br>31 = -<br>39 = €<br>41 = GW<br>42 = GWh<br>43 = h<br>44 = kg/kWh<br>48 = kVArh<br>49 = kW<br>50 = kWh/m²<br>51 = MVArh<br>52 = MW<br>54 = rm<br>55 = Srm<br>56 = € / m²<br>57 = g<br>58 = km<br>59 = m<br>60 = ORIG<br>61 = t<br>63 = kJ<br>64 = A<br>65 = V<br>66 = kVAh<br>67 = kVAr<br>68 = kVA<br>69 = °F<br>70 = Wh<br>71 = LB<br>72 = LBhr<br>73 = Einheit<br>74 = MBTU<br>76 = Gcal<br>78 = t/h<br>79 = tons<br>80 = ppm<br>81 = € / m³<br>84 = btu<br>86 = gkg<br>87 = ft<br>88 = € / kW<br>90 = kt<br>91 = m³/m²<br>92 = MMBTU<br>93 = $/MMBTU<br>95 = kBtu/m²<br>96 = kBtu<br>103 = W/m²<br>104 = Gallon<br>105 = ft³<br>106 = CCF<br>107 = therm<br>110 = mlb<br>112 = kWh/m²a<br>113 = KLB<br>114 = kg CO2 / Person<br>115 = m³m²a<br>116 = alstat<br>117 = kGal<br>118 = Gallon/m²<br>119 = MCF<br>120 = kW/Ton<br>121 = kPa<br>122 = psi<br>123 = Hertz<br>124 = Lux<br>125 = mg/l<br>126 = µS/cm<br>127 = mV<br>130 = l/m<br>131 = gpm<br>132 = kg/h<br>133 = m³/h<br>134 = ft³/m<br>135 = in WC<br>136 = ct/kWh<br>137 = inches<br>138 = W<br>139 = m/s<br>140 = Pa<br>141 = $/Gallon<br>142 = rpm<br>143 = kg/m²<br>144 = m³/d<br>146 = l/s<br>148 = Var<br>150 = kJ/kg<br>151 = Btu/lb<br>152 = hPa<br>153 = COP<br>154 = MJ/m²<br>155 = bar<br>156 = Mbar<br>157 = kmh<br>158 = Pf<br>159 = seconds<br>160 = minute<br>161 = mm<br>162 = Pkm<br>163 = Ntkm<br>164 = c / kWh<br>165 = Rooms<br>168 = ft³/h<br>169 = btu/hr<br>171 = kW/m²<br>172 = degrees<br>173 = m³/s<br>174 = kg/s<br>175 = mph<br>176 = kBtu/hr<br>177 = MBtu/hr<br>178 = psig<br>179 = mA<br>183 = klb/h<br>185 = cfm_1000<br>187 = millibar<br>188 = Nm³ <br>189 = l/m²<br>191 = kgm²a<br>192 = kg_a<br>193 = SCF<br>196 = bbl<br>197 = $<br>198 = CHF<br>200 = CZK<br>201 = £<br>202 = RMB<br>203 = HUF<br>204 = AED<br>205 = AUD<br>206 = HRK<br>207 = RON<br>208 = SIT<br>209 = INR<br>210 = PLN<br>211 = CAD<br>212 = QAR<br>213 = OMR<br>214 = TWD<br>215 = HKD<br>216 = SGD<br>217 = KRW<br>230 = CURRENCY<br>231 = DKK<br>232 = SEK<br>233 = NOK<br>239 = CF<br>240 = Dth<br>241 = 100Gal<br>242 = SKK<br>243 = kw/(m³/s)<br>244 = RUB<br>245 = SAR<br>246 = TRY<br>247 = ZAR<br>248 = VEF<br>249 = UYU<br>250 = IDR<br>251 = NGN<br>252 = MYR<br>253 = JMD<br>254 = BRL<br>255 = JPY<br>256 = MAD<br>257 = MXN<br>258 = PHP<br>259 = TND<br>260 = Unit<br>261 = MMBTU/CF<br>262 = Short Ton<br>263 = MMBTU/Short Ton<br>264 = MMBTU/Gallon<br>265 = ft²<br>266 = kWh/ft²<br>267 = kBtu/ft²<br>268 = W/ft²<br>269 = kWh/ft²a<br>270 = Gallon/ft²<br>271 = kg/ft²<br>272 = kW/ft²<br>273 = l/ft²<br>274 = ft³/ft²<br>275 = ft³/d<br>276 = ft³/s<br>277 = Nft³<br>278 = kw/(ft³/s)<br>280 = Delta °C<br>282 = Delta °F<br>283 = THB<br>284 = PKR<br>285 = ARS<br>287 = VND<br>289 = CNY<br>290 = PEN<br>
+                </p></td>
+                <td><p>Indicates the unit the resource is measuerd in (Unit in the Advantage Navigator web
+                    front-end). </p></td>
+            </tr>
+            <tr>
+                <td><p>6</p></td>
+                <td><p>displayMode</p></td>
+                <td><p>required</p></td>
+                <td><p>Integer</p></td>
+                <td><p>1 = Meter reading (standard meter reading) <br>
+                    2 = Incremental (meter measures the consumption from reading to reading and is therefore reset after
+                    each reading) </p></td>
+                <td><p>Specifies how the meter reading must be interpreted. Default value: 1 </p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>startValue</p></td>
+                <td><p>optional</p></td>
+                <td><p>Float</p></td>
+                <td><p>&nbsp;</p></td>
+                <td><p>Starting value for the meter when it is created. Default value: 0.0 </p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>readingOffset</p></td>
+                <td><p>optional</p></td>
+                <td><p>Float</p></td>
+                <td><p>&nbsp;</p></td>
+                <td><p>Specifies an offset that is added to each meter reading in order to compute the actual meter
+                    reading. Default value: 0.0 </p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>readingFactor</p></td>
+                <td><p>optional</p></td>
+                <td><p>Float</p></td>
+                <td><p>&nbsp;</p></td>
+                <td><p>Specifies a factor each meter reading is multiplied with. (e.g. if meter only measures thousands
+                    of units, the factor to be apllied to get to units will be 1000.0). Default value: 1.0</p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>deltaMax</p></td>
+                <td><p>optional</p></td>
+                <td><p>Float</p></td>
+                <td><p>&nbsp;</p></td>
+                <td><p>Specifies the maximum reading value deviation permitted for the meter. Default value: None</p>
+
+                    <p>Shown as "Alarm level" in Advantage Navigator<br></p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>deltaMin</p></td>
+                <td><p>optional</p></td>
+                <td><p>Float</p></td>
+                <td><p>&nbsp;</p></td>
+                <td><p>Specifies the minimum reading value deviation permitted for the meter. Default value: None</p>
+
+                    <p>Shown as "Warning level" in Advantage Navigator<br></p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>maxMeterValue</p></td>
+                <td><p>optional</p></td>
+                <td><p>Float</p></td>
+                <td><p>&nbsp;</p></td>
+                <td><p>Specifies the maximum reading value permitted for the meter. Default value: None</p>
+
+                    <p>Shown as "Meter value max." in Advantage Navigator<br></p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>compressFunction</p></td>
+                <td><p>optional</p></td>
+                <td><p>Integer</p></td>
+                <td><p>20 = Maximum<br>
+                    30 = Minimum<br>
+                    40 = Average<br>
+                    70 = Total<br>
+                    80 = Related Maximum </p></td>
+                <td><p>Specifies the function how meter readings should be interpolated. Default value: 70</p>
+
+                    <p>Note: Value is used for Report generation.<br></p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>compressInterval</p></td>
+                <td><p>optional</p></td>
+                <td><p>Integer</p></td>
+                <td><p>10 = 1 minute<br>
+                    20 = 5 minutes<br>
+                    40 = 15 minutes<br>
+                    50 = 30 minutes<br>
+                    60 = 60 minutes<br>
+                    70 = 1 day</p></td>
+                <td><p>Specifies the time interval between the individual meter readings. Default value: 70</p>
+
+                    <p>Note: Is displayed in Advantage Navigator as 'Reading interval'.</p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>manualRead</p></td>
+                <td><p>optional</p></td>
+                <td><p>Integer</p></td>
+                <td><p>0 = automatic <br>
+                    1 = manual<br>
+                    2 = virtual</p></td>
+                <td><p>Specifies how the meter reading is performed. Default value: 0</p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>supplierId</p></td>
+                <td><p>optional</p></td>
+                <td><p>String</p></td>
+                <td><p>0-30 characters</p></td>
+                <td><p>Supplier ID of the meter device manufacturer. Default value: None </p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>comment</p></td>
+                <td><p>optional</p></td>
+                <td><p>String</p></td>
+                <td><p>0-1024 characters </p></td>
+                <td><p>An arbitrary comment. Default value: None </p></td>
+            </tr>
+            <tr>
+                <td><p>&nbsp;</p></td>
+                <td><p>bActive</p></td>
+                <td><p>optional</p></td>
+                <td><p>Boolean</p></td>
+                <td><p>0 = false<br>
+                    1 = true</p></td>
+                <td><p>Indicates whether or not the meter is active. Default value: 1 </p></td>
+            </tr>
+        </tbody></table>
+        <p>Example:</p>
+
+        <p class="code">command=METER_EXCHANGE optionalColumnList=manualRead,bActive,supplierId delimiter=,<br>
+            MyOldDatasource,myNewDatasource,01/01/1995 13:00:00,31,86,1,1,1,133</p>
+    </div>
+    <a href="#top"><img src="Advantage%20Navigator%20Documentation%20Center-Dateien/top.gif" alt="Top of page" title="Top of page" style="float:right;" border="0"></a>
+</div>
+<div id="content">
+    <h2>command=METER_DEACTIVATE</h2>
+    <a name="meterdeactivate"></a>
+
+    <div class="doc">
+        <p>The METER_DEACTIVATE command deactivates the specified meter. This command only greys out the meter in the
+            Advantage Navigator web front-end, but does not prevent the import of further meter readings.<br>
+            Note: The deactivation of a meter is irreversible.
+        </p>
+
+        <h3>Data Columns</h3>
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tbody><tr>
+                <th><p>Column</p></th>
+                <th><p>Column Name</p></th>
+                <th><p>Req./Opt.</p></th>
+                <th><p>Data Type</p></th>
+                <th><p>Data Range</p></th>
+                <th><p>Description</p></th>
+            </tr>
+            <tr>
+                <td><p>1</p></td>
+                <td><p>datasource</p></td>
+                <td><p>required</p></td>
+                <td><p>String</p></td>
+                <td><p>1-255 characters</p></td>
+                <td><p>Specifies the ID string that uniquely identifies the <em>datasource</em> of the meter. </p></td>
+            </tr>
+        </tbody></table>
+        <p>Example:</p>
+
+        <p class="code">command=METER_DEACTIVATE<br>
+            cq_03_07_13_40_24</p>
+    </div>
+    <a href="#top"><img src="Advantage%20Navigator%20Documentation%20Center-Dateien/top.gif" alt="Top of page" title="Top of page" style="float:right;" border="0"></a>
+</div>
+<div id="content">
+    <h2>command=METER_DELETE</h2>
+    <a name="meterdelete"></a>
+
+    <div class="doc">
+        <p>The METER_DELETE command deletes the specified meter.<br>
+            Note: The deletion of a meter is irreversible.
+        </p>
+
+        <h3>Data Columns</h3>
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tbody><tr>
+                <th><p>Column</p></th>
+                <th><p>Column Name</p></th>
+                <th><p>Req./Opt.</p></th>
+                <th><p>Data Type</p></th>
+                <th><p>Data Range</p></th>
+                <th><p>Description</p></th>
+            </tr>
+            <tr>
+                <td><p>1</p></td>
+                <td><p>datasource</p></td>
+                <td><p>required</p></td>
+                <td><p>String</p></td>
+                <td><p>1-255 characters</p></td>
+                <td><p>Specifies the ID string that uniquely identifies the <em>datasource</em> of the meter. </p></td>
+            </tr>
+        </tbody></table>
+        <p>Example:</p>
+
+        <p class="code">command=METER_DELETE<br>
+            cq_03_07_13_40_24</p>
+    </div>
+    <a href="#top"><img src="Advantage%20Navigator%20Documentation%20Center-Dateien/top.gif" alt="Top of page" title="Top of page" style="float:right;" border="0"></a>
+</div>
+</td>
+</tr>
+</tbody></table>
+
+
+
+</body></html>
