@@ -2,12 +2,25 @@ package com.siemens.eadvantage.ie;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+
+import javax.net.ssl.SSLContext;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
@@ -27,6 +40,8 @@ public class ImportEngineClient {
 	
 	private final String deviceUsername;
 	private final String devicePassword;
+	
+	private final char[] keystorePassword = "ImportEngine".toCharArray();
 	
 	private String importEngineUrl = DEFAULT_IMPORT_ENGINE_URL;
 	private boolean deleteCommandFileAfterUpload = false;
@@ -49,8 +64,42 @@ public class ImportEngineClient {
 		
 		String result = null;
 		File uplaodFile = null;
+		SSLConnectionSocketFactory factory = null;
 		
-		CloseableHttpClient httpclient = HttpClients.custom().setRedirectStrategy(new LaxRedirectStrategy()).build();
+		try {
+			
+			KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+						
+			URL keystoreURL = getClass().getClassLoader().getResource("keystore.jks");
+			if(keystoreURL == null) throw new IOException("Keystore could not be found or no privileges to access");
+			
+			// converting the URL to a URI is necessary because the URL.getFile() command escapes spaces with %20
+			// see http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4466485 for details
+			URI keystoreURI = new URI(keystoreURL.toString());			
+			File keystoreFile = new File(keystoreURI.getPath());
+			FileInputStream keystoreStream = new FileInputStream(keystoreFile);
+			
+			trustStore.load(keystoreStream, keystorePassword);
+			
+			SSLContext context = SSLContexts.custom().loadTrustMaterial(trustStore).build();
+			factory = new SSLConnectionSocketFactory(context);
+		
+		} catch (KeyManagementException e) {
+			throw new IOException(e.getMessage(), e);
+		} catch (KeyStoreException e) {
+			throw new IOException(e.getMessage(), e);
+		} catch (NoSuchAlgorithmException e) {
+			throw new IOException(e.getMessage(), e);
+		} catch (CertificateException e) {
+			throw new IOException(e.getMessage(), e);
+		} catch (URISyntaxException e) {
+			throw new IOException(e.getMessage(), e);
+		}
+		
+		CloseableHttpClient httpclient = HttpClients.custom()
+				.setSSLSocketFactory(factory)
+				.setRedirectStrategy(new LaxRedirectStrategy())
+				.build();
 		
 		try {
 			
