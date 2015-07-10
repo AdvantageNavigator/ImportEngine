@@ -1,5 +1,9 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'maven'
+
+group = 'com.siemens.eadvantage'
+version = '0.8'
 
 repositories {
     mavenCentral()
@@ -16,4 +20,16 @@ dependencies {
 task "create-dirs" << {
     sourceSets*.java.srcDirs*.each { it.mkdirs() }
     sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+}
+
+
+install {
+    repositories.mavenInstaller {
+        // only necessary if artifact ID diverges from project name
+        // the latter defaults to project directory name and can be
+        // configured in settings.gradle
+        pom.artifactId = 'importengine' 
+        // shouldn't be needed as this is the default anyway
+        pom.packaging = 'jar'
+    }
 }
