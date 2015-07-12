@@ -138,5 +138,13 @@ public class ImportEngineClient {
 		
 		return executeCommand(command);
 	}
-	
+
+	public boolean getDeleteCommandFileAfterUpload() {
+		return deleteCommandFileAfterUpload;
+	}
+
+	public void setDeleteCommandFileAfterUpload(boolean deleteCommandFileAfterUpload) {
+		this.deleteCommandFileAfterUpload = deleteCommandFileAfterUpload;
+	}
+
 }
