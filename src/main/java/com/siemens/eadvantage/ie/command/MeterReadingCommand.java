@@ -12,7 +12,7 @@ import com.siemens.eadvantage.ie.types.QualityFlag;
 
 public class MeterReadingCommand extends Command {
 
-	private final List<MeterReading> readings = new ArrayList<MeterReading>();
+	protected final List<MeterReading> readings = new ArrayList<MeterReading>();
 	private boolean sendQualityAttribute = false;
 	private boolean sendDescription = false;
 	private boolean sendBeginDate = false;
