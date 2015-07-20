@@ -12,7 +12,7 @@ import com.siemens.eadvantage.ie.types.QualityFlag;
 
 public class MeterReadingCommand extends Command {
 
-	protected final List<MeterReading> readings = new ArrayList<MeterReading>();
+	private final List<MeterReading> readings = new ArrayList<MeterReading>();
 	private boolean sendQualityAttribute = false;
 	private boolean sendDescription = false;
 	private boolean sendBeginDate = false;
@@ -99,6 +99,15 @@ public class MeterReadingCommand extends Command {
 		}
 		
 		return builder.toString();
+	}
+	
+	/**
+	 * Gets a <b>copy</b> of the internal meter readings list.
+	 * 
+	 * @return list of meter readings
+	 */
+	public List<MeterReading> getReadings() {
+		return new ArrayList<MeterReading>(readings);
 	}
 	
 }
